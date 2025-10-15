@@ -1,0 +1,301 @@
+import React, { useState } from 'react';
+import { User, Mail, Phone, MapPin, Calendar, Upload, Save, CreditCard as Edit3, GraduationCap, Award, FileText } from 'lucide-react';
+import ResumeManager from '../../components/Student/ResumeManager';
+
+const ProfileView = () => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [profileData, setProfileData] = useState({
+    fullName: 'John Student',
+    email: 'student@placementhub.edu',
+    phone: '+1-555-0123',
+    studentId: 'STU2024001',
+    department: 'Computer Science',
+    graduationYear: 2024,
+    cgpa: 3.8,
+    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL'],
+    bio: 'Passionate computer science student with a strong foundation in web development and software engineering. Eager to apply my skills in a challenging internship or entry-level position.',
+    experience: [
+      {
+        title: 'Web Development Intern',
+        company: 'TechStart Inc.',
+        duration: 'Summer 2023',
+        description: 'Developed responsive web applications using React and Node.js'
+      }
+    ],
+    projects: [
+      {
+        name: 'E-commerce Platform',
+        description: 'Full-stack web application with React frontend and Node.js backend',
+        technologies: ['React', 'Node.js', 'MongoDB', 'Express']
+      }
+    ]
+  });
+
+  const [newSkill, setNewSkill] = useState('');
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProfileData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const addSkill = () => {
+    if (newSkill.trim() && !profileData.skills.includes(newSkill.trim())) {
+      setProfileData(prev => ({
+        ...prev,
+        skills: [...prev.skills, newSkill.trim()]
+      }));
+      setNewSkill('');
+    }
+  };
+
+  const removeSkill = (skillToRemove) => {
+    setProfileData(prev => ({
+      ...prev,
+      skills: prev.skills.filter(skill => skill !== skillToRemove)
+    }));
+  };
+
+  const handleSave = () => {
+    // In real app, this would save to database
+    console.log('Saving profile:', profileData);
+    setIsEditing(false);
+  };
+
+  return (
+    <div className="p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
+            <p className="mt-2 text-gray-600">Manage your personal information and showcase your skills</p>
+          </div>
+          <button
+            onClick={() => setIsEditing(!isEditing)}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center"
+          >
+            <Edit3 className="h-4 w-4 mr-2" />
+            {isEditing ? 'Cancel' : 'Edit Profile'}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Profile Card */}
+          <div className="lg:col-span-1">
+            <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
+              <div className="text-center">
+                <div className="relative inline-block">
+                  <div className="w-24 h-24 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                    {profileData.fullName.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  {isEditing && (
+                    <button className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow">
+                      <Upload className="h-4 w-4 text-gray-600" />
+                    </button>
+                  )}
+                </div>
+                
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={profileData.fullName}
+                    onChange={handleInputChange}
+                    className="text-xl font-semibold text-gray-900 text-center w-full border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                  />
+                ) : (
+                  <h2 className="text-xl font-semibold text-gray-900">{profileData.fullName}</h2>
+                )}
+                
+                <p className="text-gray-600 mt-1">{profileData.department} Student</p>
+                <p className="text-sm text-gray-500">Class of {profileData.graduationYear}</p>
+              </div>
+
+              <div className="mt-6 space-y-3">
+                <div className="flex items-center text-sm text-gray-600">
+                  <Mail className="h-4 w-4 mr-3" />
+                  {isEditing ? (
+                    <input
+                      type="email"
+                      name="email"
+                      value={profileData.email}
+                      onChange={handleInputChange}
+                      className="flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                    />
+                  ) : (
+                    <span>{profileData.email}</span>
+                  )}
+                </div>
+                
+                <div className="flex items-center text-sm text-gray-600">
+                  <Phone className="h-4 w-4 mr-3" />
+                  {isEditing ? (
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={profileData.phone}
+                      onChange={handleInputChange}
+                      className="flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                    />
+                  ) : (
+                    <span>{profileData.phone}</span>
+                  )}
+                </div>
+                
+                <div className="flex items-center text-sm text-gray-600">
+                  <GraduationCap className="h-4 w-4 mr-3" />
+                  <span>ID: {profileData.studentId}</span>
+                </div>
+                
+                <div className="flex items-center text-sm text-gray-600">
+                  <Award className="h-4 w-4 mr-3" />
+                  {isEditing ? (
+                    <input
+                      type="number"
+                      name="cgpa"
+                      value={profileData.cgpa}
+                      onChange={handleInputChange}
+                      step="0.1"
+                      min="0"
+                      max="4"
+                      className="flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                    />
+                  ) : (
+                    <span>CGPA: {profileData.cgpa}/4.0</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* About Section */}
+            <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">About Me</h3>
+              {isEditing ? (
+                <textarea
+                  name="bio"
+                  value={profileData.bio}
+                  onChange={handleInputChange}
+                  rows={4}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  placeholder="Tell us about yourself..."
+                />
+              ) : (
+                <p className="text-gray-600">{profileData.bio}</p>
+              )}
+            </div>
+
+            {/* Skills Section */}
+            <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Skills</h3>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {profileData.skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200"
+                  >
+                    {skill}
+                    {isEditing && (
+                      <button
+                        onClick={() => removeSkill(skill)}
+                        className="ml-2 text-red-500 hover:text-red-700"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </span>
+                ))}
+              </div>
+              
+              {isEditing && (
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={newSkill}
+                    onChange={(e) => setNewSkill(e.target.value)}
+                    placeholder="Add a skill"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+                  />
+                  <button
+                    onClick={addSkill}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Add
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Experience Section */}
+            <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Experience</h3>
+              <div className="space-y-4">
+                {profileData.experience.map((exp, index) => (
+                  <div key={index} className="border-l-4 border-blue-500 pl-4">
+                    <h4 className="font-medium text-gray-900">{exp.title}</h4>
+                    <p className="text-sm text-gray-600">{exp.company} • {exp.duration}</p>
+                    <p className="text-sm text-gray-700 mt-1">{exp.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Projects Section */}
+            <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Projects</h3>
+              <div className="space-y-4">
+                {profileData.projects.map((project, index) => (
+                  <div key={index} className="p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg">
+                    <h4 className="font-medium text-gray-900">{project.name}</h4>
+                    <p className="text-sm text-gray-600 mt-1">{project.description}</p>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {project.technologies.map((tech, techIndex) => (
+                        <span
+                          key={techIndex}
+                          className="inline-flex items-center px-2 py-1 rounded text-xs bg-blue-100 text-blue-800"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {isEditing && (
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Changes
+                </button>
+              </div>
+            )}
+
+            {/* Resume Manager Section */}
+            <div className="mt-8">
+              <ResumeManager />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProfileView;
