@@ -2,6 +2,20 @@
 
 A comprehensive web application for managing college placement activities, connecting students with employers, and streamlining the job application process.
 
+## 🌐 Live Demo
+
+**🔗 Deployed Application:** [https://ganeshmamidala.github.io/fedfproject/](https://ganeshmamidala.github.io/fedfproject/)
+
+### Demo Accounts
+Try the application with these pre-configured accounts:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@placementhub.edu | admin123 |
+| Student | student@placementhub.edu | student123 |
+| Employer | employer@company.com | employer123 |
+| Placement Officer | officer@placementhub.edu | officer123 |
+
 ## 🚀 Features
 
 ### For Students
