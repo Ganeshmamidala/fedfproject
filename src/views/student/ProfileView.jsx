@@ -1,37 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 import { User, Mail, Phone, MapPin, Calendar, Upload, Save, CreditCard as Edit3, GraduationCap, Award, FileText } from 'lucide-react';
-import ResumeManager from '../../components/Student/ResumeManager';
+import { getProfile, updateProfile } from '../../lib/mockData';
 
 const ProfileView = () => {
+  const { user, userProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
-    fullName: 'John Student',
-    email: 'student@placementhub.edu',
-    phone: '+1-555-0123',
-    studentId: 'STU2024001',
-    department: 'Computer Science',
-    graduationYear: 2024,
-    cgpa: 3.8,
-    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL'],
-    bio: 'Passionate computer science student with a strong foundation in web development and software engineering. Eager to apply my skills in a challenging internship or entry-level position.',
-    experience: [
-      {
-        title: 'Web Development Intern',
-        company: 'TechStart Inc.',
-        duration: 'Summer 2023',
-        description: 'Developed responsive web applications using React and Node.js'
-      }
-    ],
-    projects: [
-      {
-        name: 'E-commerce Platform',
-        description: 'Full-stack web application with React frontend and Node.js backend',
-        technologies: ['React', 'Node.js', 'MongoDB', 'Express']
-      }
-    ]
+    fullName: '',
+    email: '',
+    phone: '',
+    studentId: '',
+    department: '',
+    graduationYear: new Date().getFullYear(),
+    cgpa: 0,
+    skills: [],
+    bio: '',
+    experience: [],
+    projects: []
   });
-
   const [newSkill, setNewSkill] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      const profile = getProfile(user.id);
+      setProfileData({
+        fullName: profile.full_name || user.email,
+        email: profile.email || user.email,
+        phone: profile.phone || '+1-555-0123',
+        studentId: profile.studentId || `STU${user.id}`,
+        department: profile.department || 'Computer Science',
+        graduationYear: profile.graduationYear || 2024,
+        cgpa: profile.cgpa || 3.8,
+        skills: profile.skills || ['JavaScript', 'React', 'Node.js', 'Python', 'SQL'],
+        bio: profile.bio || 'Passionate computer science student with a strong foundation in web development and software engineering. Eager to apply my skills in a challenging internship or entry-level position.',
+        experience: profile.experience || [
+          {
+            title: 'Web Development Intern',
+            company: 'TechStart Inc.',
+            duration: 'Summer 2023',
+            description: 'Developed responsive web applications using React and Node.js'
+          }
+        ],
+        projects: profile.projects || [
+          {
+            name: 'E-commerce Platform',
+            description: 'Full-stack web application with React frontend and Node.js backend',
+            technologies: ['React', 'Node.js', 'MongoDB', 'Express']
+          }
+        ]
+      });
+    }
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -59,9 +79,11 @@ const ProfileView = () => {
   };
 
   const handleSave = () => {
-    // In real app, this would save to database
-    console.log('Saving profile:', profileData);
-    setIsEditing(false);
+    if (user) {
+      updateProfile(user.id, profileData);
+      console.log('Profile saved:', profileData);
+      setIsEditing(false);
+    }
   };
 
   return (
@@ -287,9 +309,13 @@ const ProfileView = () => {
               </div>
             )}
 
-            {/* Resume Manager Section */}
-            <div className="mt-8">
-              <ResumeManager />
+            {/* Resume/Document Upload Section - removed ResumeManager */}
+            <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Documents</h3>
+              <p className="text-sm text-gray-600">Upload your resume and other documents in the Document Management section</p>
+              <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                Go to Documents
+              </button>
             </div>
           </div>
         </div>

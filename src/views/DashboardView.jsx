@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import DashboardStats from '../components/Dashboard/DashboardStats';
 import RecentActivity from '../components/Dashboard/RecentActivity';
+import PerformanceCharts from '../components/Dashboard/PerformanceCharts';
+import AdvancedAnalytics from '../components/Analytics/AdvancedAnalytics';
+import { KeyboardShortcutsHelp, useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.jsx';
+import { Keyboard } from 'lucide-react';
 
 const DashboardView = () => {
   const { userProfile } = useAuth();
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
+
+  // Setup keyboard shortcuts
+  useKeyboardShortcuts({
+    onHelp: () => setShowShortcutsHelp(true),
+    onClose: () => {
+      setShowShortcutsHelp(false);
+      setShowAnalytics(false);
+    },
+  });
 
   const getDashboardTitle = () => {
     switch (userProfile?.role) {
@@ -38,14 +53,43 @@ const DashboardView = () => {
 
   return (
     <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">{getDashboardTitle()}</h1>
-        <p className="mt-2 text-gray-600">{getDashboardDescription()}</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{getDashboardTitle()}</h1>
+          <p className="mt-2 text-gray-600">{getDashboardDescription()}</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowAnalytics(!showAnalytics)}
+            className={`px-4 py-2 rounded-lg transition-all ${
+              showAnalytics 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            {showAnalytics ? 'Show Overview' : 'Advanced Analytics'}
+          </button>
+          
+          <button
+            onClick={() => setShowShortcutsHelp(true)}
+            className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+            title="Keyboard Shortcuts (Ctrl + /)"
+          >
+            <Keyboard className="h-5 w-5" />
+          </button>
+        </div>
       </div>
 
-      <DashboardStats />
+      {showAnalytics ? (
+        <AdvancedAnalytics userRole={userProfile?.role} />
+      ) : (
+        <>
+          <DashboardStats />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <PerformanceCharts />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <RecentActivity />
         </div>
@@ -131,6 +175,14 @@ const DashboardView = () => {
           </div>
         </div>
       </div>
+      </>
+      )}
+
+      {/* Keyboard Shortcuts Help Modal */}
+      <KeyboardShortcutsHelp 
+        isOpen={showShortcutsHelp} 
+        onClose={() => setShowShortcutsHelp(false)} 
+      />
     </div>
   );
 };

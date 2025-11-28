@@ -1,119 +1,172 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, AlertCircle, Briefcase, Users } from 'lucide-react';
+import { getData } from '../../lib/mockData';
 
 const RecentActivity = () => {
-  const { userProfile } = useAuth();
+  const { user, userProfile } = useAuth();
+  const [activities, setActivities] = useState([]);
 
-  // Mock data - in real app, this would come from API
-  const getActivitiesForRole = () => {
-    switch (userProfile?.role) {
-      case 'admin':
-        return [
-          { 
-            title: 'New employer registered', 
-            description: 'TechCorp Solutions created an account',
-            time: '2 hours ago',
-            type: 'success',
-            icon: CheckCircle
-          },
-          { 
-            title: 'Job application submitted', 
-            description: 'Sarah Johnson applied for Software Engineer position',
-            time: '4 hours ago',
-            type: 'info',
-            icon: AlertCircle
-          },
-          { 
-            title: 'User verification pending', 
-            description: '3 new users awaiting verification',
-            time: '1 day ago',
-            type: 'warning',
-            icon: Clock
+  useEffect(() => {
+    if (user && userProfile) {
+      const data = getData();
+      const users = JSON.parse(localStorage.getItem('mock-users') || '[]');
+      const recentActivities = [];
+
+      switch (userProfile.role) {
+        case 'admin':
+          // Show recent registrations, applications, and jobs
+          const recentUsers = users.slice(-3).reverse();
+          recentUsers.forEach(u => {
+            if (u.id !== user.id) {
+              recentActivities.push({
+                title: `New ${u.role} registered`,
+                description: `${u.full_name} created an account`,
+                time: 'Recently',
+                type: 'success',
+                icon: Users
+              });
+            }
+          });
+
+          const recentJobs = (data.jobs || []).slice(-2).reverse();
+          recentJobs.forEach(job => {
+            recentActivities.push({
+              title: 'New job posted',
+              description: `${job.title} at ${job.company}`,
+              time: new Date(job.postedDate).toLocaleDateString(),
+              type: 'info',
+              icon: Briefcase
+            });
+          });
+          break;
+
+        case 'student':
+          // Show student's applications and interviews
+          const studentApps = (data.applications || []).filter(a => a.studentId === user.id);
+          studentApps.slice(-3).reverse().forEach(app => {
+            const job = (data.jobs || []).find(j => j.id === app.jobId);
+            if (job) {
+              recentActivities.push({
+                title: 'Application submitted',
+                description: `Applied for ${job.title} at ${job.company}`,
+                time: new Date(app.appliedDate).toLocaleDateString(),
+                type: app.status === 'accepted' ? 'success' : 'info',
+                icon: app.status === 'accepted' ? CheckCircle : AlertCircle
+              });
+            }
+          });
+
+          const studentInterviews = (data.interviews || []).filter(i => i.studentId === user.id);
+          studentInterviews.forEach(interview => {
+            recentActivities.push({
+              title: 'Interview scheduled',
+              description: `Interview on ${new Date(interview.date).toLocaleDateString()}`,
+              time: 'Upcoming',
+              type: 'success',
+              icon: CheckCircle
+            });
+          });
+
+          // Show available jobs if no activities
+          if (recentActivities.length === 0) {
+            const availableJobs = (data.jobs || []).filter(j => j.status === 'active').slice(0, 3);
+            availableJobs.forEach(job => {
+              recentActivities.push({
+                title: 'New job available',
+                description: `${job.title} at ${job.company} - ${job.salary}`,
+                time: new Date(job.postedDate).toLocaleDateString(),
+                type: 'info',
+                icon: Briefcase
+              });
+            });
           }
-        ];
-      
-      case 'student':
-        return [
-          { 
-            title: 'Application status updated', 
-            description: 'Your application for Software Engineer at TechCorp is under review',
-            time: '1 hour ago',
-            type: 'info',
-            icon: AlertCircle
-          },
-          { 
-            title: 'New job matching your profile', 
-            description: 'Frontend Developer position at StartupXYZ',
-            time: '3 hours ago',
-            type: 'success',
-            icon: CheckCircle
-          },
-          { 
-            title: 'Interview scheduled', 
-            description: 'Interview with DataTech for Data Analyst role on Monday 10 AM',
-            time: '1 day ago',
-            type: 'success',
-            icon: CheckCircle
+          break;
+
+        case 'employer':
+          // Show applications for employer's jobs
+          const employerJobs = (data.jobs || []).filter(j => j.employerId === user.id);
+          const employerJobIds = employerJobs.map(j => j.id);
+          const employerApps = (data.applications || []).filter(a => employerJobIds.includes(a.jobId));
+          
+          employerApps.slice(-3).reverse().forEach(app => {
+            const job = employerJobs.find(j => j.id === app.jobId);
+            const applicant = users.find(u => u.id === app.studentId);
+            if (job && applicant) {
+              recentActivities.push({
+                title: 'New application received',
+                description: `${applicant.full_name} applied for ${job.title}`,
+                time: new Date(app.appliedDate).toLocaleDateString(),
+                type: 'info',
+                icon: AlertCircle
+              });
+            }
+          });
+
+          // Show posted jobs if no applications
+          if (recentActivities.length === 0) {
+            employerJobs.slice(-3).reverse().forEach(job => {
+              recentActivities.push({
+                title: 'Job posted',
+                description: `${job.title} - ${job.salary}`,
+                time: new Date(job.postedDate).toLocaleDateString(),
+                type: 'success',
+                icon: Briefcase
+              });
+            });
           }
-        ];
-      
-      case 'employer':
-        return [
-          { 
-            title: 'New application received', 
-            description: 'Michael Chen applied for Backend Developer position',
-            time: '30 minutes ago',
-            type: 'info',
-            icon: AlertCircle
-          },
-          { 
-            title: 'Candidate shortlisted', 
-            description: 'Emma Wilson shortlisted for UI/UX Designer role',
-            time: '2 hours ago',
-            type: 'success',
-            icon: CheckCircle
-          },
-          { 
-            title: 'Job posting expires soon', 
-            description: 'Frontend Developer position expires in 3 days',
-            time: '5 hours ago',
-            type: 'warning',
-            icon: Clock
-          }
-        ];
-      
-      case 'placement_officer':
-        return [
-          { 
-            title: 'Placement record updated', 
-            description: 'Alex Kumar successfully placed at Google',
-            time: '1 hour ago',
-            type: 'success',
-            icon: CheckCircle
-          },
-          { 
-            title: 'Company verification completed', 
-            description: 'Microsoft verified as recruitment partner',
-            time: '4 hours ago',
-            type: 'success',
-            icon: CheckCircle
-          },
-          { 
-            title: 'Bulk application deadline approaching', 
-            description: 'Campus recruitment applications close in 2 days',
-            time: '8 hours ago',
-            type: 'warning',
-            icon: Clock
-          }
-        ];
-      
-      default:
-        return [];
+          break;
+
+        case 'placement_officer':
+          // Show placements and applications
+          const recentPlacements = (data.placements || []).slice(-2).reverse();
+          recentPlacements.forEach(placement => {
+            const student = users.find(u => u.id === placement.studentId);
+            if (student) {
+              recentActivities.push({
+                title: 'Student placed',
+                description: `${student.full_name} placed at ${placement.company} - ${placement.package}`,
+                time: new Date(placement.placedDate).toLocaleDateString(),
+                type: 'success',
+                icon: CheckCircle
+              });
+            }
+          });
+
+          const allApplications = (data.applications || []).slice(-2).reverse();
+          allApplications.forEach(app => {
+            const job = (data.jobs || []).find(j => j.id === app.jobId);
+            const student = users.find(u => u.id === app.studentId);
+            if (job && student) {
+              recentActivities.push({
+                title: 'New application',
+                description: `${student.full_name} applied for ${job.title}`,
+                time: new Date(app.appliedDate).toLocaleDateString(),
+                type: 'info',
+                icon: AlertCircle
+              });
+            }
+          });
+          break;
+
+        default:
+          break;
+      }
+
+      // If no activities, show a welcome message
+      if (recentActivities.length === 0) {
+        recentActivities.push({
+          title: 'Welcome to PlacementHub!',
+          description: 'Your recent activities will appear here',
+          time: 'Just now',
+          type: 'info',
+          icon: AlertCircle
+        });
+      }
+
+      setActivities(recentActivities.slice(0, 5)); // Limit to 5 activities
     }
-  };
-
-  const activities = getActivitiesForRole();
+  }, [user, userProfile]);
 
   const getTypeColor = (type) => {
     const colors = {

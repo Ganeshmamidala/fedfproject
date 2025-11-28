@@ -1,43 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Users, Briefcase, FileText, TrendingUp } from 'lucide-react';
+import { getStatistics } from '../../lib/mockData';
 
 const DashboardStats = () => {
-  const { userProfile } = useAuth();
+  const { user, userProfile } = useAuth();
+  const [statistics, setStatistics] = useState({});
 
-  // Mock data - in real app, this would come from API
+  useEffect(() => {
+    if (user && userProfile) {
+      const stats = getStatistics(user.id, userProfile.role);
+      setStatistics(stats);
+    }
+  }, [user, userProfile]);
+
   const getStatsForRole = () => {
     switch (userProfile?.role) {
       case 'admin':
         return [
-          { title: 'Total Users', value: '1,248', icon: Users, color: 'bg-blue-500' },
-          { title: 'Active Jobs', value: '89', icon: Briefcase, color: 'bg-green-500' },
-          { title: 'Applications', value: '3,421', icon: FileText, color: 'bg-purple-500' },
-          { title: 'Placements', value: '156', icon: TrendingUp, color: 'bg-orange-500' }
+          { title: 'Total Users', value: statistics.totalUsers || 0, icon: Users, color: 'bg-blue-500' },
+          { title: 'Active Jobs', value: statistics.activeJobs || 0, icon: Briefcase, color: 'bg-green-500' },
+          { title: 'Applications', value: statistics.totalApplications || 0, icon: FileText, color: 'bg-purple-500' },
+          { title: 'Placements', value: statistics.totalPlacements || 0, icon: TrendingUp, color: 'bg-orange-500' }
         ];
       
       case 'student':
         return [
-          { title: 'Available Jobs', value: '89', icon: Briefcase, color: 'bg-blue-500' },
-          { title: 'My Applications', value: '12', icon: FileText, color: 'bg-green-500' },
-          { title: 'Interviews', value: '3', icon: Users, color: 'bg-purple-500' },
-          { title: 'Profile Views', value: '47', icon: TrendingUp, color: 'bg-orange-500' }
+          { title: 'Available Jobs', value: statistics.availableJobs || 0, icon: Briefcase, color: 'bg-blue-500' },
+          { title: 'My Applications', value: statistics.myApplications || 0, icon: FileText, color: 'bg-green-500' },
+          { title: 'Interviews', value: statistics.interviews || 0, icon: Users, color: 'bg-purple-500' },
+          { title: 'Placements', value: statistics.placements || 0, icon: TrendingUp, color: 'bg-orange-500' }
         ];
       
       case 'employer':
         return [
-          { title: 'Posted Jobs', value: '8', icon: Briefcase, color: 'bg-blue-500' },
-          { title: 'Applications Received', value: '234', icon: FileText, color: 'bg-green-500' },
-          { title: 'Candidates Shortlisted', value: '45', icon: Users, color: 'bg-purple-500' },
-          { title: 'Successful Hires', value: '12', icon: TrendingUp, color: 'bg-orange-500' }
+          { title: 'Posted Jobs', value: statistics.postedJobs || 0, icon: Briefcase, color: 'bg-blue-500' },
+          { title: 'Active Jobs', value: statistics.activeJobs || 0, icon: Briefcase, color: 'bg-green-500' },
+          { title: 'Applications Received', value: statistics.applicationsReceived || 0, icon: FileText, color: 'bg-purple-500' },
+          { title: 'Interviews', value: statistics.interviews || 0, icon: Users, color: 'bg-orange-500' }
         ];
       
       case 'placement_officer':
         return [
-          { title: 'Students Placed', value: '156', icon: Users, color: 'bg-blue-500' },
-          { title: 'Active Companies', value: '34', icon: Briefcase, color: 'bg-green-500' },
-          { title: 'Ongoing Applications', value: '421', icon: FileText, color: 'bg-purple-500' },
-          { title: 'Placement Rate', value: '78%', icon: TrendingUp, color: 'bg-orange-500' }
+          { title: 'Total Students', value: statistics.totalStudents || 0, icon: Users, color: 'bg-blue-500' },
+          { title: 'Placed Students', value: statistics.placedStudents || 0, icon: TrendingUp, color: 'bg-green-500' },
+          { title: 'Active Jobs', value: statistics.activeJobs || 0, icon: Briefcase, color: 'bg-purple-500' },
+          { title: 'Placement Rate', value: `${statistics.placementRate || 0}%`, icon: TrendingUp, color: 'bg-orange-500' }
         ];
       
       default:

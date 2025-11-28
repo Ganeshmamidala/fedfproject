@@ -5,8 +5,8 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-a
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Mock user data for demo purposes
-const mockUsers = [
+// Default mock user data for demo purposes
+const defaultMockUsers = [
   {
     id: '1',
     email: 'admin@placementhub.edu',
@@ -37,6 +37,38 @@ const mockUsers = [
   }
 ];
 
+// Load users from localStorage or use defaults
+const loadMockUsers = () => {
+  try {
+    const stored = localStorage.getItem('mock-users');
+    if (stored) {
+      const users = JSON.parse(stored);
+      console.log('Loaded users from localStorage:', users.length);
+      return users;
+    }
+  } catch (error) {
+    console.error('Error loading mock users:', error);
+  }
+  // If no stored users, initialize with defaults and save them
+  console.log('No stored users found, initializing with defaults');
+  const defaults = [...defaultMockUsers];
+  saveMockUsers(defaults);
+  return defaults;
+};
+
+// Save users to localStorage
+const saveMockUsers = (users) => {
+  try {
+    localStorage.setItem('mock-users', JSON.stringify(users));
+    console.log('Saved users to localStorage:', users.length);
+  } catch (error) {
+    console.error('Error saving mock users:', error);
+  }
+};
+
+// Initialize mock users from localStorage
+let mockUsers = loadMockUsers();
+
 // Check if we're using placeholder values (demo mode)
 const isDemoMode = supabaseUrl === 'https://placeholder.supabase.co';
 
@@ -45,6 +77,9 @@ export const signUp = async (email, password, userData) => {
     console.log('supabase.signUp called with:', { email, userData, isDemoMode });
     
     if (isDemoMode) {
+      // Reload users from localStorage to get latest
+      mockUsers = loadMockUsers();
+      
       // Check if user already exists
       const existingUser = mockUsers.find(u => u.email === email);
       if (existingUser) {
@@ -66,6 +101,9 @@ export const signUp = async (email, password, userData) => {
       
       console.log('Creating new user:', newUser);
       mockUsers.push(newUser);
+      
+      // Save updated users to localStorage
+      saveMockUsers(mockUsers);
       
       // Automatically log in the new user
       const mockSession = {
@@ -112,10 +150,21 @@ export const signUp = async (email, password, userData) => {
 
 export const signIn = async (email, password) => {
   if (isDemoMode) {
+    // Reload users from localStorage to get latest registered users
+    mockUsers = loadMockUsers();
+    console.log('═══════════════════════════════════════════');
+    console.log('🔐 SIGN IN ATTEMPT');
+    console.log('Email:', email);
+    console.log('Total users in database:', mockUsers.length);
+    console.log('All registered emails:', mockUsers.map(u => u.email));
+    
     // Mock authentication for demo
     const user = mockUsers.find(u => u.email === email && u.password === password);
     
     if (user) {
+      console.log('✅ User found! Logging in:', user.email);
+      console.log('User details:', { name: user.full_name, role: user.role });
+      
       // Store mock session in localStorage
       const mockSession = {
         user: {
@@ -126,11 +175,13 @@ export const signIn = async (email, password) => {
             role: user.role
           }
         },
-        access_token: 'mock-token',
+        access_token: 'mock-token-' + user.id,
         expires_at: Date.now() + 3600000 // 1 hour
       };
       
       localStorage.setItem('mock-session', JSON.stringify(mockSession));
+      console.log('✅ Session created successfully');
+      console.log('═══════════════════════════════════════════');
       
       return {
         data: {
@@ -140,6 +191,19 @@ export const signIn = async (email, password) => {
         error: null
       };
     } else {
+      // Check if email exists
+      const emailExists = mockUsers.find(u => u.email === email);
+      if (emailExists) {
+        console.log('❌ Email found but password is incorrect');
+      } else {
+        console.log('❌ Email not found in database');
+        console.log('💡 Hint: Available demo accounts:');
+        defaultMockUsers.forEach(u => {
+          console.log(`   - ${u.email} / ${u.password} (${u.role})`);
+        });
+      }
+      console.log('═══════════════════════════════════════════');
+      
       return {
         data: { user: null, session: null },
         error: { message: 'Invalid email or password' }
@@ -196,4 +260,130 @@ export const getMockSession = () => {
     }
   }
   return null;
+};
+// Utility function to reset mock data (useful for testing)
+export const resetMockData = () => {
+  localStorage.removeItem('mock-users');
+  localStorage.removeItem('mock-session');
+  mockUsers = [...defaultMockUsers];
+  saveMockUsers(mockUsers);
+  console.log('Mock data reset to defaults');
+};
+
+// Utility function to view all registered users (for debugging)
+export const viewMockUsers = () => {
+  if (isDemoMode) {
+    const users = loadMockUsers();
+    console.log('Registered users:', users.map(u => ({ email: u.email, full_name: u.full_name, role: u.role })));
+    return users;
+  }
+  return [];
+};
+
+// Get database statistics
+export const getDatabaseStats = () => {
+  if (!isDemoMode) {
+    console.log('Database stats only available in demo mode');
+    return null;
+  }
+
+  const users = loadMockUsers();
+  const currentSession = getMockSession();
+  
+  // Count users by role
+  const stats = {
+    totalUsers: users.length,
+    defaultUsers: defaultMockUsers.length,
+    newRegistrations: users.length - defaultMockUsers.length,
+    currentlySignedIn: currentSession ? 1 : 0,
+    byRole: {
+      admin: users.filter(u => u.role === 'admin').length,
+      student: users.filter(u => u.role === 'student').length,
+      employer: users.filter(u => u.role === 'employer').length,
+      placement_officer: users.filter(u => u.role === 'placement_officer').length
+    },
+    currentUser: currentSession ? {
+      email: currentSession.user.email,
+      full_name: currentSession.user.user_metadata.full_name,
+      role: currentSession.user.user_metadata.role
+    } : null
+  };
+
+  // Display formatted statistics
+  console.log('\n═══════════════════════════════════════════');
+  console.log('📊 DATABASE STATISTICS');
+  console.log('═══════════════════════════════════════════');
+  console.log(`👥 Total Registered Users: ${stats.totalUsers}`);
+  console.log(`📝 New Registrations: ${stats.newRegistrations}`);
+  console.log(`✅ Currently Signed In: ${stats.currentlySignedIn}`);
+  console.log('\n📋 Users by Role:');
+  console.log(`   👨‍💼 Admins: ${stats.byRole.admin}`);
+  console.log(`   🎓 Students: ${stats.byRole.student}`);
+  console.log(`   🏢 Employers: ${stats.byRole.employer}`);
+  console.log(`   👔 Placement Officers: ${stats.byRole.placement_officer}`);
+  
+  if (stats.currentUser) {
+    console.log('\n🔐 Current Session:');
+    console.log(`   Name: ${stats.currentUser.full_name}`);
+    console.log(`   Email: ${stats.currentUser.email}`);
+    console.log(`   Role: ${stats.currentUser.role}`);
+  } else {
+    console.log('\n🔓 No active session');
+  }
+  console.log('═══════════════════════════════════════════\n');
+
+  return stats;
+};
+
+// Get list of all users with details
+export const listAllUsers = () => {
+  if (!isDemoMode) {
+    console.log('User list only available in demo mode');
+    return [];
+  }
+
+  const users = loadMockUsers();
+  
+  console.log('\n═══════════════════════════════════════════');
+  console.log('📋 ALL REGISTERED USERS');
+  console.log('═══════════════════════════════════════════');
+  
+  users.forEach((user, index) => {
+    const isDefault = defaultMockUsers.some(du => du.id === user.id);
+    const marker = isDefault ? '🔹' : '🆕';
+    console.log(`\n${marker} User ${index + 1}:`);
+    console.log(`   Name: ${user.full_name}`);
+    console.log(`   Email: ${user.email}`);
+    console.log(`   Role: ${user.role}`);
+    console.log(`   Type: ${isDefault ? 'Default' : 'New Registration'}`);
+  });
+  
+  console.log('\n═══════════════════════════════════════════\n');
+  
+  return users;
+};
+
+// Export all users to JSON (for backup/analysis)
+export const exportUsers = () => {
+  if (!isDemoMode) {
+    console.log('Export only available in demo mode');
+    return null;
+  }
+
+  const users = loadMockUsers();
+  const exportData = {
+    exportDate: new Date().toISOString(),
+    totalUsers: users.length,
+    users: users.map(u => ({
+      id: u.id,
+      email: u.email,
+      full_name: u.full_name,
+      role: u.role
+    }))
+  };
+
+  console.log('📦 User data exported:', exportData);
+  console.log('💾 Copy the object above to save user data');
+  
+  return exportData;
 };

@@ -1,83 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageCircle, Send, Search, User, Clock, Paperclip, Phone, Video } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { getConversations, getMessages, sendMessage } from '../../lib/mockData';
 
 const MessagingView = () => {
+  const { user, userProfile } = useAuth();
+  const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const conversations = [
-    {
-      id: '1',
-      participants: [
-        { id: '1', name: 'John Doe', role: 'student', avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150' },
-        { id: '2', name: 'Tech Corp HR', role: 'employer', avatar: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=150' }
-      ],
-      lastMessage: {
-        id: '1',
-        senderId: '2',
-        senderName: 'Tech Corp HR',
-        senderRole: 'employer',
-        content: 'Thank you for your application. We would like to schedule an interview.',
-        timestamp: new Date(Date.now() - 30 * 60 * 1000),
-        read: false
-      },
-      unreadCount: 2
-    },
-    {
-      id: '2',
-      participants: [
-        { id: '1', name: 'Jane Smith', role: 'student', avatar: 'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&w=150' },
-        { id: '3', name: 'Innovation Labs', role: 'employer', avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=150' }
-      ],
-      lastMessage: {
-        id: '2',
-        senderId: '1',
-        senderName: 'Jane Smith',
-        senderRole: 'student',
-        content: 'I am very interested in the Software Engineer position.',
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-        read: true
-      },
-      unreadCount: 0
+  useEffect(() => {
+    if (user) {
+      loadConversations();
     }
-  ];
+  }, [user]);
 
-  const messages = [
-    {
-      id: '1',
-      senderId: '2',
-      senderName: 'Tech Corp HR',
-      senderRole: 'employer',
-      content: 'Hello! Thank you for applying to our Software Developer position.',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      read: true
-    },
-    {
-      id: '2',
-      senderId: '1',
-      senderName: 'John Doe',
-      senderRole: 'student',
-      content: 'Thank you for considering my application. I am very excited about this opportunity.',
-      timestamp: new Date(Date.now() - 90 * 60 * 1000),
-      read: true
-    },
-    {
-      id: '3',
-      senderId: '2',
-      senderName: 'Tech Corp HR',
-      senderRole: 'employer',
-      content: 'Thank you for your application. We would like to schedule an interview.',
-      timestamp: new Date(Date.now() - 30 * 60 * 1000),
-      read: false
+  useEffect(() => {
+    if (selectedConversation) {
+      loadMessages(selectedConversation.userId);
     }
-  ];
+  }, [selectedConversation]);
+
+  const loadConversations = () => {
+    const convs = getConversations(user.id);
+    setConversations(convs);
+  };
+
+  const loadMessages = (otherUserId) => {
+    const msgs = getMessages(user.id, otherUserId);
+    setMessages(msgs);
+  };
 
   const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      // Add message logic here
+    if (newMessage.trim() && selectedConversation) {
+      sendMessage(user.id, selectedConversation.userId, newMessage.trim());
       setNewMessage('');
+      loadMessages(selectedConversation.userId);
+      loadConversations();
     }
+  };
+
+  const handleSelectConversation = (conversation) => {
+    setSelectedConversation(conversation);
   };
 
   const formatTime = (date) => {
@@ -119,44 +85,54 @@ const MessagingView = () => {
             </div>
 
             <div className="overflow-y-auto h-full">
-              {conversations.map((conversation) => (
-                <div
-                  key={conversation.id}
-                  onClick={() => setSelectedConversation(conversation.id)}
-                  className={`p-4 border-b border-gray-200/30 cursor-pointer transition-all duration-200 hover:bg-blue-50/50 ${
-                    selectedConversation === conversation.id ? 'bg-blue-50/70 border-l-4 border-l-blue-500' : ''
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="relative">
-                      <img
-                        src={conversation.participants[1]?.avatar || conversation.participants[0]?.avatar}
-                        alt="Avatar"
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                      {conversation.unreadCount > 0 && (
-                        <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                          {conversation.unreadCount}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-semibold text-gray-900 truncate">
-                          {conversation.participants.find(p => p.role !== 'student')?.name || 
-                           conversation.participants[0]?.name}
-                        </h3>
-                        <span className="text-xs text-gray-500">
-                          {formatTime(conversation.lastMessage.timestamp)}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600 truncate mt-1">
-                        {conversation.lastMessage.content}
-                      </p>
-                    </div>
-                  </div>
+              {conversations.length === 0 ? (
+                <div className="p-8 text-center">
+                  <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-500">No conversations yet</p>
+                  <p className="text-sm text-gray-400 mt-1">Start chatting with employers or students</p>
                 </div>
-              ))}
+              ) : (
+                conversations
+                  .filter(conv => 
+                    conv.user?.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    conv.user?.email?.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .map((conversation) => (
+                    <div
+                      key={conversation.userId}
+                      onClick={() => handleSelectConversation(conversation)}
+                      className={`p-4 border-b border-gray-200/30 cursor-pointer transition-all duration-200 hover:bg-blue-50/50 ${
+                        selectedConversation?.userId === conversation.userId ? 'bg-blue-50/70 border-l-4 border-l-blue-500' : ''
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="relative">
+                          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                            {conversation.user?.full_name?.[0] || '?'}
+                          </div>
+                          {conversation.unreadCount > 0 && (
+                            <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                              {conversation.unreadCount}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <h3 className="font-semibold text-gray-900 truncate">
+                              {conversation.user?.full_name || 'Unknown User'}
+                            </h3>
+                            <span className="text-xs text-gray-500">
+                              {formatTime(new Date(conversation.lastMessage.timestamp))}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 truncate mt-1">
+                            {conversation.lastMessage.content}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+              )}
             </div>
           </div>
 
@@ -168,14 +144,12 @@ const MessagingView = () => {
                 <div className="p-6 border-b border-gray-200/50 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <img
-                        src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=150"
-                        alt="Avatar"
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
+                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                        {selectedConversation.user?.full_name?.[0] || '?'}
+                      </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">Tech Corp HR</h3>
-                        <p className="text-sm text-gray-600">Online</p>
+                        <h3 className="font-semibold text-gray-900">{selectedConversation.user?.full_name || 'Unknown User'}</h3>
+                        <p className="text-sm text-gray-600 capitalize">{selectedConversation.user?.role || 'User'}</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -191,27 +165,34 @@ const MessagingView = () => {
 
                 {/* Messages */}
                 <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${message.senderRole === 'student' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div
-                        className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
-                          message.senderRole === 'student'
-                            ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                            : 'bg-gray-100 text-gray-900'
-                        }`}
-                      >
-                        <p className="text-sm">{message.content}</p>
-                        <p className={`text-xs mt-1 ${
-                          message.senderRole === 'student' ? 'text-blue-100' : 'text-gray-500'
-                        }`}>
-                          {formatTime(message.timestamp)}
-                        </p>
-                      </div>
+                  {messages.length === 0 ? (
+                    <div className="text-center text-gray-500 mt-8">
+                      <MessageCircle className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                      <p>No messages yet. Start a conversation!</p>
                     </div>
-                  ))}
+                  ) : (
+                    messages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex ${message.senderId === user.id ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
+                            message.senderId === user.id
+                              ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                              : 'bg-gray-100 text-gray-900'
+                          }`}
+                        >
+                          <p className="text-sm">{message.content}</p>
+                          <p className={`text-xs mt-1 ${
+                            message.senderId === user.id ? 'text-blue-100' : 'text-gray-500'
+                          }`}>
+                            {formatTime(new Date(message.timestamp))}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
 
                 {/* Message Input */}

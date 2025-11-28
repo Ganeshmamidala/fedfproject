@@ -80,7 +80,7 @@ const LoginForm = ({ onBackToLanding }) => {
     { role: 'Placement Officer', email: 'officer@placementhub.edu', password: 'officer123' }
   ];
 
-  const fillDemoCredentials = (demoEmail) => {
+  const fillDemoCredentials = (demoEmail, demoPassword) => {
     setEmail(demoEmail);
     setPassword(demoPassword);
     setIsLogin(true);
