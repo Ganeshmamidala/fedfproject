@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   GraduationCap, 
   Building, 
@@ -11,507 +11,483 @@ import {
   Target,
   Briefcase,
   UserCheck,
-  BarChart3
+  BarChart3,
+  Rocket,
+  Shield,
+  Zap,
+  Globe,
+  ChevronRight,
+  Play
 } from 'lucide-react';
 
-
-
 const LandingPage = ({ onShowLogin }) => {
-  const handleWatchDemo = () => {
-    // Create a demo modal or redirect to demo video
-    const demoModal = document.createElement('div');
-    demoModal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4';
-    demoModal.innerHTML = `
-      <div class="bg-white rounded-xl p-8 max-w-2xl w-full relative">
-        <button onclick="this.parentElement.parentElement.remove()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">PlacementHub Demo</h3>
-        <div class="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
-          <div class="text-center">
-            <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-              </svg>
-            </div>
-            <p class="text-gray-600">Demo video coming soon!</p>
-            <p class="text-sm text-gray-500 mt-2">Experience the full platform by signing in with a demo account.</p>
-          </div>
-        </div>
-        <div class="flex justify-center space-x-4">
-          <button onclick="this.parentElement.parentElement.parentElement.remove()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-            Close
-          </button>
-          <button onclick="this.parentElement.parentElement.parentElement.remove(); arguments[0].target.closest('.landing-page').querySelector('.login-button').click()" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all">
-            Try Demo Account
-          </button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(demoModal);
+  const [scrollY, setScrollY] = useState(0);
+  const [navShrink, setNavShrink] = useState(false);
+  const [visibleSections, setVisibleSections] = useState(new Set());
+  const [counters, setCounters] = useState({
+    students: 0,
+    companies: 0,
+    jobs: 0,
+    placements: 0
+  });
+  
+  const sectionRefs = useRef({});
+  const observerRef = useRef(null);
+
+  // Scroll effect for navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrollY(currentScrollY);
+      setNavShrink(currentScrollY > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections(prev => new Set([...prev, entry.target.id]));
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
+    );
+
+    Object.values(sectionRefs.current).forEach(ref => {
+      if (ref) observerRef.current.observe(ref);
+    });
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  // Counter animation
+  useEffect(() => {
+    if (visibleSections.has('stats-section')) {
+      const targets = { students: 5000, companies: 250, jobs: 1200, placements: 4500 };
+      const duration = 2000;
+      const steps = 60;
+      const stepDuration = duration / steps;
+
+      const intervals = {};
+      Object.keys(targets).forEach(key => {
+        const increment = targets[key] / steps;
+        let current = 0;
+        intervals[key] = setInterval(() => {
+          current += increment;
+          if (current >= targets[key]) {
+            setCounters(prev => ({ ...prev, [key]: targets[key] }));
+            clearInterval(intervals[key]);
+          } else {
+            setCounters(prev => ({ ...prev, [key]: Math.floor(current) }));
+          }
+        }, stepDuration);
+      });
+
+      return () => {
+        Object.values(intervals).forEach(interval => clearInterval(interval));
+      };
+    }
+  }, [visibleSections]);
+
+  const scrollToSection = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const features = [
-    {
-      icon: Briefcase,
-      title: 'Job Opportunities',
-      description: 'Access thousands of job postings from top companies and startups.',
-      color: 'from-blue-500 to-cyan-500'
-    },
-    {
-      icon: UserCheck,
-      title: 'Smart Matching',
-      description: 'Get matched with jobs that fit your skills and career goals.',
-      color: 'from-purple-500 to-pink-500'
-    },
-    {
-      icon: BarChart3,
-      title: 'Career Analytics',
-      description: 'Track your application progress and career development.',
-      color: 'from-green-500 to-emerald-500'
-    },
-    {
-      icon: Award,
-      title: 'Placement Success',
-      description: 'Join thousands of students who found their dream jobs.',
-      color: 'from-orange-500 to-red-500'
-    }
-  ];
-
-  const stats = [
-    { number: '10,000+', label: 'Students Placed', icon: Users },
-    { number: '500+', label: 'Partner Companies', icon: Building },
-    { number: '95%', label: 'Success Rate', icon: TrendingUp },
-    { number: '24/7', label: 'Support Available', icon: CheckCircle }
-  ];
-
-  const testimonials = [
-    {
-      name: 'Sarah Johnson',
-      role: 'Software Engineer at Google',
-      content: 'PlacementHub helped me land my dream job at Google. The platform made the entire process seamless!',
-      rating: 5
-    },
-    {
-      name: 'Michael Chen',
-      role: 'Data Scientist at Microsoft',
-      content: 'The career guidance and job matching features are incredible. Highly recommended for all students!',
-      rating: 5
-    },
-    {
-      name: 'Emily Davis',
-      role: 'Product Manager at Amazon',
-      content: 'Thanks to PlacementHub, I found the perfect role that matches my skills and career aspirations.',
-      rating: 5
-    }
-  ];
-
   return (
-    <div className="landing-page min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-cyan-50 relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-cyan-400 rounded-full opacity-10"></div>
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-blue-500 rounded-full opacity-10"></div>
-      </div>
-
-      {/* Header */}
-      <header className="relative z-10 bg-white shadow-sm border-b border-gray-200">
+    <div className="landing-page bg-white overflow-hidden">
+      {/* Sticky Navigation */}
+      <nav 
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+          navShrink 
+            ? 'bg-white shadow-lg py-3' 
+            : 'bg-white/95 backdrop-blur-sm py-5'
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
-                <GraduationCap className="h-6 w-6 text-white" />
+              <div className={`bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                navShrink ? 'h-10 w-10' : 'h-12 w-12'
+              }`}>
+                <GraduationCap className={`text-white transition-all duration-300 ${
+                  navShrink ? 'h-5 w-5' : 'h-6 w-6'
+                }`} />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className={`font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent transition-all duration-300 ${
+                navShrink ? 'text-xl' : 'text-2xl'
+              }`}>
                 PlacementHub
               </h1>
             </div>
-            <div className="flex items-center space-x-6">
-              <nav className="hidden md:flex space-x-8">
-                <a href="#" className="text-gray-700 hover:text-cyan-600 font-medium transition-colors">Home</a>
-                <a href="#" className="text-gray-700 hover:text-cyan-600 font-medium transition-colors">About Us</a>
-                <a href="#" className="text-gray-700 hover:text-cyan-600 font-medium transition-colors">Pages</a>
-                <a href="#" className="text-gray-700 hover:text-cyan-600 font-medium transition-colors">Blog</a>
-                <a href="#" className="text-gray-700 hover:text-cyan-600 font-medium transition-colors">Contact</a>
-              </nav>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <span>📞</span>
-                <span className="font-semibold">Make A Call Anytime</span>
-              </div>
+
+            {/* Nav Links */}
+            <div className="hidden md:flex items-center space-x-8">
+              {['Home', 'About', 'Features', 'Companies', 'Students', 'Contact'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => scrollToSection(item.toLowerCase())}
+                  className="text-gray-700 hover:text-cyan-600 font-medium transition-all duration-300 relative group"
+                >
+                  {item}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 group-hover:w-full transition-all duration-300"></span>
+                </button>
+              ))}
               <button
                 onClick={onShowLogin}
-                className="login-button bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-2.5 rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-2.5 rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 font-medium"
               >
                 Sign In
               </button>
             </div>
+
+            {/* Mobile Menu Button */}
+            <button className="md:hidden p-2" onClick={onShowLogin}>
+              <div className="w-6 h-0.5 bg-gray-700 mb-1.5"></div>
+              <div className="w-6 h-0.5 bg-gray-700 mb-1.5"></div>
+              <div className="w-6 h-0.5 bg-gray-700"></div>
+            </button>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Hero Section */}
-      <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div>
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Upgrade Your
-                <br />
-                <span className="text-gray-800">Career Journey</span>
-              </h1>
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-lg">
-                Connect with top companies, discover amazing internship and placement opportunities, 
-                and launch your professional career with confidence. Join thousands of students who have 
-                found their dream jobs through our platform.
-              </p>
+      {/* Hero Section with Parallax */}
+      <section 
+        id="home"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+        style={{
+          transform: `translateY(${scrollY * 0.5}px)`,
+        }}
+      >
+        {/* Background Image with Overlay */}
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&h=1080&fit=crop)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            transform: `translateY(${scrollY * 0.3}px)`,
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/90 via-blue-900/85 to-cyan-900/90"></div>
+        </div>
 
-              <div className="flex items-center space-x-4 mb-12">
-                <button
-                  onClick={onShowLogin}
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl text-base font-semibold"
-                >
-                  Discover Opportunities
-                </button>
-                <button 
-                  onClick={handleWatchDemo}
-                  className="flex items-center space-x-3 text-gray-700 hover:text-cyan-600 transition-colors font-medium"
-                >
-                  <div className="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center">
-                    <svg className="w-5 h-5 text-cyan-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-                    </svg>
-                  </div>
-                  <span>Watch The Video</span>
-                </button>
-              </div>
+        {/* Floating Particles */}
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-2 h-2 bg-white/20 rounded-full animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${5 + Math.random() * 10}s`,
+            }}
+          />
+        ))}
 
-              {/* Progress Stats */}
-              <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 max-w-md">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">We Aim To Provide Placement Success</h3>
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-600">Students Placed</span>
-                      <span className="font-semibold text-gray-900">85%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-cyan-500 to-blue-600 h-2 rounded-full" style={{width: '85%'}}></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-600">Success Rate</span>
-                      <span className="font-semibold text-gray-900">92%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-cyan-500 to-blue-600 h-2 rounded-full" style={{width: '92%'}}></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="animate-fadeInUp">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+              Your Gateway to
+              <span className="block mt-2 bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
+                Dream Career
+              </span>
+            </h1>
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed px-4">
+              Connect with top companies, discover amazing internship and placement opportunities, 
+              and launch your professional career with confidence.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 px-4">
+              <button
+                onClick={onShowLogin}
+                className="group bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center w-full sm:w-auto justify-center"
+              >
+                Start Tracking
+                <Rocket className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button className="group bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/20 transition-all duration-300 flex items-center border border-white/30 w-full sm:w-auto justify-center">
+                <Play className="mr-2 w-5 h-5" />
+                Watch Demo
+              </button>
             </div>
 
-            {/* Right Content - Students/Professional Image */}
-            <div className="relative">
-              <div className="relative z-10">
-                <div className="bg-gradient-to-br from-cyan-100 to-blue-100 rounded-3xl relative overflow-hidden">
-                  {/* Students/professionals image */}
-                  <div className="aspect-square">
-                    <img 
-                      src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=800&fit=crop" 
-                      alt="Students collaborating" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  
-                  {/* Floating Badge */}
-                  <div className="absolute bottom-8 left-8 bg-gradient-to-r from-blue-900 to-blue-800 text-white px-8 py-6 rounded-2xl shadow-xl">
-                    <div className="flex items-center space-x-4">
-                      <div className="text-4xl">🎓</div>
-                      <div>
-                        <p className="text-2xl font-bold">Placement Hub</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Decorative cyan circle */}
-              <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-cyan-500 rounded-full opacity-20"></div>
+            {/* Scroll Indicator */}
+            <div className="animate-bounce mt-16">
+              <ChevronRight className="w-8 h-8 text-white mx-auto rotate-90" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section - We Build Competitive Business */}
-      <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left - Images Grid */}
-            <div className="relative">
+      {/* Stats / Metrics Section */}
+      <section 
+        id="stats-section"
+        ref={el => sectionRefs.current['stats-section'] = el}
+        className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {[
+              { icon: Users, label: 'Students Registered', value: counters.students, color: 'from-cyan-500 to-blue-500' },
+              { icon: Building, label: 'Companies Onboarded', value: counters.companies, color: 'from-blue-500 to-indigo-500' },
+              { icon: Briefcase, label: 'Jobs Listed', value: counters.jobs, color: 'from-indigo-500 to-purple-500' },
+              { icon: Award, label: 'Total Placements', value: counters.placements, color: 'from-purple-500 to-pink-500' },
+            ].map((stat, index) => (
+              <div
+                key={stat.label}
+                className={`bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${
+                  visibleSections.has('stats-section') 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-20'
+                }`}
+                style={{ transitionDelay: `${index * 150}ms` }}
+              >
+                <div className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r ${stat.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                  <stat.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+                </div>
+                <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                  {stat.value.toLocaleString()}+
+                </div>
+                <div className="text-gray-600 font-medium text-sm sm:text-base">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section 
+        id="about"
+        ref={el => sectionRefs.current['about'] = el}
+        className="py-16 sm:py-24 bg-white relative overflow-hidden"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left - Images */}
+            <div className={`relative transition-all duration-1000 ${
+              visibleSections.has('about') 
+                ? 'opacity-100 translate-x-0' 
+                : 'opacity-0 -translate-x-20'
+            }`}>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4">
-                  <div className="bg-gray-200 rounded-2xl aspect-square overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop" 
-                      alt="Students working together" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="bg-gray-200 rounded-2xl aspect-video overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=400&h=300&fit=crop" 
-                      alt="Professional interview" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+                  <img 
+                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop" 
+                    alt="Students collaborating" 
+                    className="rounded-2xl shadow-xl hover:scale-105 transition-transform duration-500 w-full"
+                  />
+                  <img 
+                    src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=400&h=300&fit=crop" 
+                    alt="Professional interview" 
+                    className="rounded-2xl shadow-xl hover:scale-105 transition-transform duration-500 w-full"
+                  />
                 </div>
                 <div className="space-y-4 pt-8">
-                  <div className="bg-gray-200 rounded-2xl aspect-video overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&h=300&fit=crop" 
-                      alt="Career counseling" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="bg-gray-200 rounded-2xl aspect-square overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=400&fit=crop" 
-                      alt="Students celebrating success" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+                  <img 
+                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&h=300&fit=crop" 
+                    alt="Career counseling" 
+                    className="rounded-2xl shadow-xl hover:scale-105 transition-transform duration-500 w-full"
+                  />
+                  <img 
+                    src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=400&fit=crop" 
+                    alt="Success celebration" 
+                    className="rounded-2xl shadow-xl hover:scale-105 transition-transform duration-500 w-full"
+                  />
                 </div>
               </div>
               
-              {/* Experience Badge */}
-              <div className="absolute -bottom-6 -left-6 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-6 rounded-2xl shadow-2xl">
-                <div className="flex items-center space-x-4">
-                  <div className="text-center">
-                    <Award className="w-12 h-12 mb-2" />
-                  </div>
-                  <div>
-                    <p className="text-4xl font-bold">10K+</p>
-                    <p className="text-sm opacity-90">Students Placed</p>
-                  </div>
+              {/* Floating Badge */}
+              <div className="absolute -bottom-6 sm:-bottom-8 -right-4 sm:-right-8 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 sm:px-8 py-4 sm:py-6 rounded-2xl shadow-2xl animate-float">
+                <div className="text-center">
+                  <Award className="w-10 h-10 sm:w-12 sm:h-12 mb-2 mx-auto" />
+                  <p className="text-2xl sm:text-3xl font-bold">10K+</p>
+                  <p className="text-xs sm:text-sm opacity-90">Students Placed</p>
                 </div>
               </div>
             </div>
 
             {/* Right - Content */}
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                We Build Competitive Career Opportunities
+            <div className={`transition-all duration-1000 delay-300 ${
+              visibleSections.has('about') 
+                ? 'opacity-100 translate-x-0' 
+                : 'opacity-0 translate-x-20'
+            }`}>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                Building Competitive Career Opportunities
               </h2>
-              <p className="text-gray-600 mb-8 leading-relaxed">
+              <p className="text-base sm:text-lg text-gray-600 mb-8 leading-relaxed">
                 Our platform connects talented students with leading companies across various industries. 
                 We provide comprehensive placement assistance, career guidance, and skill development programs 
-                to ensure every student finds their perfect career match. With our advanced matching algorithms 
-                and dedicated support team, we've helped thousands of students launch successful careers.
+                to ensure every student finds their perfect career match.
               </p>
 
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <CheckCircle className="w-6 h-6 text-cyan-600" />
+              <div className="space-y-6 mb-8">
+                {[
+                  { icon: CheckCircle, title: 'Student Success', desc: 'Personalized career guidance and placement support throughout your journey.' },
+                  { icon: Target, title: 'Career Mission', desc: 'Connecting talented students with industry-leading companies.' },
+                ].map((item, index) => (
+                  <div key={index} className="flex items-start space-x-4 group">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-cyan-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                      <item.icon className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{item.title}</h3>
+                      <p className="text-sm sm:text-base text-gray-600">{item.desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Student Success</h3>
-                    <p className="text-gray-600">We prioritize student success with personalized career guidance and placement support throughout your journey.</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Target className="w-6 h-6 text-cyan-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Career Mission</h3>
-                    <p className="text-gray-600">Connecting talented students with industry-leading companies to build successful and fulfilling careers.</p>
-                  </div>
-                </div>
+                ))}
               </div>
 
-              <div className="mt-8 flex items-center space-x-6 p-6 bg-gray-50 rounded-xl">
-                <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center">
-                  <Users className="w-8 h-8 text-gray-600" />
-                </div>
-                <div>
-                  <p className="font-bold text-gray-900 text-lg">Placement Team</p>
-                  <p className="text-gray-600">Career Counselors & Advisors</p>
-                </div>
-                <button 
-                  onClick={onShowLogin}
-                  className="ml-auto bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all shadow-md font-medium"
-                >
-                  More About Us
-                </button>
-              </div>
+              <button 
+                onClick={onShowLogin}
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 font-semibold inline-flex items-center"
+              >
+                More About Us
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </button>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Best Placement Services
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              We offer comprehensive placement and career development services to help students achieve their 
-              professional goals and land their dream jobs with top companies.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all group">
-              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Briefcase className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-6xl font-bold text-gray-100 mb-4">01</div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Job Opportunities</h3>
-              <p className="text-gray-600 mb-6">
-                Access thousands of internship and placement opportunities from top companies across various industries and sectors.
-              </p>
-              <a href="#" className="text-cyan-600 font-semibold hover:text-cyan-700 inline-flex items-center">
-                Learn More... <ArrowRight className="w-4 h-4 ml-2" />
-              </a>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all group">
-              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <BarChart3 className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-6xl font-bold text-gray-100 mb-4">02</div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Career Analytics</h3>
-              <p className="text-gray-600 mb-6">
-                Track your application progress, interview performance, and career growth with our advanced analytics dashboard.
-              </p>
-              <a href="#" className="text-cyan-600 font-semibold hover:text-cyan-700 inline-flex items-center">
-                Learn More... <ArrowRight className="w-4 h-4 ml-2" />
-              </a>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all group">
-              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Target className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-6xl font-bold text-gray-100 mb-4">03</div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Career Guidance</h3>
-              <p className="text-gray-600 mb-6">
-                Get personalized career counseling, resume building, and interview preparation support from our expert team.
-              </p>
-              <a href="#" className="text-cyan-600 font-semibold hover:text-cyan-700 inline-flex items-center">
-                Learn More... <ArrowRight className="w-4 h-4 ml-2" />
-              </a>
-            </div>
-          </div>
-
-          <div className="text-center mt-12">
-            <button 
-              onClick={onShowLogin}
-              className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all shadow-lg font-semibold"
-            >
-              View All Services
-            </button>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8 bg-white/50 backdrop-blur-lg">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose PlacementHub?
+      <section 
+        id="features"
+        ref={el => sectionRefs.current['features'] = el}
+        className="py-16 sm:py-24 bg-gradient-to-br from-gray-50 to-white"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Powerful Features
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We provide everything you need to succeed in your career journey, from job discovery to placement success.
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
+              Everything you need to manage placements efficiently and effectively
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <div key={index} className="bg-white/80 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-200/50 card-hover text-center">
-                  <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
-                    <Icon className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {[
+              { icon: Rocket, title: 'Smart Job Matching', desc: 'AI-powered algorithm matches students with perfect job opportunities based on skills and preferences.', color: 'from-cyan-500 to-blue-500' },
+              { icon: BarChart3, title: 'Analytics Dashboard', desc: 'Real-time insights and analytics to track application progress and placement metrics.', color: 'from-blue-500 to-indigo-500' },
+              { icon: Shield, title: 'Secure Platform', desc: 'Enterprise-grade security ensuring your data and documents are always protected.', color: 'from-indigo-500 to-purple-500' },
+              { icon: Zap, title: 'Quick Applications', desc: 'Apply to multiple jobs with a single click. Save time with smart application management.', color: 'from-purple-500 to-pink-500' },
+              { icon: Globe, title: 'Global Reach', desc: 'Connect with companies worldwide and explore international placement opportunities.', color: 'from-pink-500 to-red-500' },
+              { icon: UserCheck, title: 'Expert Guidance', desc: 'Access career counseling, resume building, and interview preparation support.', color: 'from-red-500 to-orange-500' },
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className={`bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 group cursor-pointer transform hover:-translate-y-2 ${
+                  visibleSections.has('features') 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-20'
+                }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
+              >
+                <div className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                  <feature.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
                 </div>
-              );
-            })}
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 group-hover:text-cyan-600 transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                  {feature.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+      {/* Companies Section */}
+      <section 
+        id="companies"
+        ref={el => sectionRefs.current['companies'] = el}
+        className="py-16 sm:py-24 bg-white relative overflow-hidden"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 px-4">
+              Trusted by Leading Companies
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
+              Join thousands of students who have landed their dream jobs with top employers
+            </p>
+          </div>
+
+          {/* Logo Carousel */}
+          <div className="relative overflow-hidden">
+            <div className="flex animate-scroll space-x-8 sm:space-x-12 py-8">
+              {[...Array(10)].map((_, i) => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 w-40 h-20 sm:w-48 sm:h-24 bg-gray-100 rounded-xl flex items-center justify-center hover:shadow-lg hover:scale-110 transition-all duration-300 cursor-pointer group"
+                >
+                  <Building className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 group-hover:text-cyan-600 transition-colors" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section 
+        id="students"
+        ref={el => sectionRefs.current['students'] = el}
+        className="py-16 sm:py-24 bg-gradient-to-br from-gray-50 to-white"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 px-4">
               How It Works
             </h2>
-            <p className="text-xl text-gray-600">
-              Simple steps to land your dream job
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
+              Get placed in just four simple steps
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                <span className="text-2xl font-bold text-white">1</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Create Your Profile</h3>
-              <p className="text-gray-600">Build a comprehensive profile showcasing your skills, experience, and career goals.</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                <span className="text-2xl font-bold text-white">2</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Discover Opportunities</h3>
-              <p className="text-gray-600">Browse thousands of job listings and get matched with positions that fit your profile.</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                <span className="text-2xl font-bold text-white">3</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Get Hired</h3>
-              <p className="text-gray-600">Apply with confidence and track your progress until you land your dream job.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8 bg-white/50 backdrop-blur-lg">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Success Stories
-            </h2>
-            <p className="text-xl text-gray-600">
-              Hear from students who found their dream jobs
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white/80 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-200/50 card-hover">
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-4 italic">"{testimonial.content}"</p>
-                <div>
-                  <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                  <div className="text-sm text-gray-500">{testimonial.role}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {[
+              { step: '01', icon: UserCheck, title: 'Create Profile', desc: 'Sign up and build your professional profile with resume and skills' },
+              { step: '02', icon: Briefcase, title: 'Browse Jobs', desc: 'Explore thousands of opportunities from top companies' },
+              { step: '03', icon: TrendingUp, title: 'Apply & Track', desc: 'Apply with one click and track your application status' },
+              { step: '04', icon: Award, title: 'Get Placed', desc: 'Attend interviews and land your dream job' },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className={`relative text-center transition-all duration-700 ${
+                  visibleSections.has('students') 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-20'
+                }`}
+                style={{ transitionDelay: `${index * 200}ms` }}
+              >
+                {/* Connecting Line */}
+                {index < 3 && (
+                  <div className="hidden lg:block absolute top-16 left-1/2 w-full h-0.5 bg-gradient-to-r from-cyan-300 to-blue-300 z-0"></div>
+                )}
+                
+                <div className="relative z-10 bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                  <div className="text-5xl sm:text-6xl font-bold text-gray-100 mb-4">{item.step}</div>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 animate-float">
+                    <item.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
+                  <p className="text-sm sm:text-base text-gray-600">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -520,43 +496,190 @@ const LandingPage = ({ onShowLogin }) => {
       </section>
 
       {/* CTA Section */}
-      <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 shadow-2xl">
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Ready to Start Your Journey?
-            </h2>
-            <p className="text-xl text-blue-100 mb-8">
-              Join thousands of students who have already found their dream careers through PlacementHub.
-            </p>
-            <button
-              onClick={onShowLogin}
-              className="bg-white text-blue-600 px-8 py-4 rounded-xl hover:bg-gray-50 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-lg font-semibold flex items-center justify-center mx-auto"
-            >
-              Get Started Now
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </button>
-          </div>
+      <section 
+        id="contact"
+        ref={el => sectionRefs.current['contact'] = el}
+        className="py-16 sm:py-24 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 relative overflow-hidden"
+      >
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(10)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-64 h-64 bg-white/5 rounded-full animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${10 + Math.random() * 10}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className={`relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-1000 ${
+          visibleSections.has('contact') 
+            ? 'opacity-100 scale-100' 
+            : 'opacity-0 scale-95'
+        }`}>
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            Ready to Start Your Career Journey?
+          </h2>
+          <p className="text-lg sm:text-xl md:text-2xl text-blue-100 mb-12 max-w-2xl mx-auto">
+            Join thousands of students who have already found their dream placements
+          </p>
+          <button
+            onClick={onShowLogin}
+            className="group bg-white text-cyan-600 px-8 sm:px-12 py-4 sm:py-5 rounded-lg text-lg sm:text-xl font-bold hover:shadow-2xl hover:scale-110 transition-all duration-300 inline-flex items-center"
+          >
+            Get Started Now
+            <Rocket className="ml-3 w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-2 transition-transform" />
+          </button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="flex items-center justify-center space-x-3 mb-6">
-            <div className="h-8 w-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <GraduationCap className="h-5 w-5 text-white" />
+      <footer className="bg-gray-900 text-gray-300 py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 mb-12">
+            {/* Logo & About */}
+            <div className="col-span-1 sm:col-span-2">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="h-12 w-12 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center">
+                  <GraduationCap className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">PlacementHub</h3>
+              </div>
+              <p className="text-gray-400 leading-relaxed mb-6">
+                Your trusted partner in career development and placement success. 
+                Connecting talent with opportunity since 2020.
+              </p>
+              {/* Social Icons */}
+              <div className="flex space-x-4">
+                {['facebook', 'twitter', 'linkedin', 'instagram'].map((social) => (
+                  <a
+                    key={social}
+                    href="#"
+                    className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-cyan-600 transition-all duration-300 hover:scale-110"
+                  >
+                    <span className="sr-only">{social}</span>
+                    <div className="w-5 h-5 bg-gray-400 rounded"></div>
+                  </a>
+                ))}
+              </div>
             </div>
-            <h3 className="text-xl font-bold">PlacementHub</h3>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="text-white font-bold mb-4">Quick Links</h4>
+              <ul className="space-y-3">
+                {['About Us', 'Features', 'Companies', 'Students', 'Contact'].map((link) => (
+                  <li key={link}>
+                    <a href="#" className="hover:text-cyan-400 transition-colors duration-300 flex items-center group text-sm sm:text-base">
+                      <ChevronRight className="w-4 h-4 mr-1 group-hover:translate-x-1 transition-transform" />
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h4 className="text-white font-bold mb-4">Legal</h4>
+              <ul className="space-y-3">
+                {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'GDPR'].map((link) => (
+                  <li key={link}>
+                    <a href="#" className="hover:text-cyan-400 transition-colors duration-300 flex items-center group text-sm sm:text-base">
+                      <ChevronRight className="w-4 h-4 mr-1 group-hover:translate-x-1 transition-transform" />
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <p className="text-gray-400 mb-6">
-            Connecting students with their dream careers since 2020
-          </p>
-          <div className="text-sm text-gray-500">
-            © 2024 PlacementHub. All rights reserved.
+
+          {/* Copyright */}
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-500">
+            <p className="text-sm sm:text-base">&copy; 2025 PlacementHub. All rights reserved. Built with ❤️ for students.</p>
           </div>
         </div>
       </footer>
+
+      {/* Custom Animations CSS */}
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+        }
+
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+
+        .animate-fadeInUp {
+          animation: fadeInUp 1s ease-out;
+        }
+
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-scroll {
+          animation: scroll 30s linear infinite;
+        }
+
+        /* Smooth scrolling */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, #06b6d4, #2563eb);
+          border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(to bottom, #0891b2, #1d4ed8);
+        }
+
+        /* Responsive text sizing */
+        @media (max-width: 640px) {
+          html {
+            font-size: 14px;
+          }
+        }
+      `}</style>
     </div>
   );
 };
