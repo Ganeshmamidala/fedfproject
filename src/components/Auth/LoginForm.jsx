@@ -16,8 +16,34 @@ const LoginForm = ({ onBackToLanding }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  
+  // CAPTCHA state
+  const [captchaNum1, setCaptchaNum1] = useState(0);
+  const [captchaNum2, setCaptchaNum2] = useState(0);
+  const [captchaAnswer, setCaptchaAnswer] = useState('');
+  const [captchaVerified, setCaptchaVerified] = useState(false);
 
   const { signIn, signUp } = useAuth();
+
+  // Generate new CAPTCHA
+  const generateCaptcha = () => {
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    setCaptchaNum1(num1);
+    setCaptchaNum2(num2);
+    setCaptchaAnswer('');
+    setCaptchaVerified(false);
+  };
+
+  // Initialize CAPTCHA on component mount
+  React.useEffect(() => {
+    generateCaptcha();
+  }, []);
+
+  // Regenerate CAPTCHA when switching between login/signup
+  React.useEffect(() => {
+    generateCaptcha();
+  }, [isLogin]);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,6 +70,15 @@ const LoginForm = ({ onBackToLanding }) => {
     setSuccess('');
 
     try {
+      // CAPTCHA verification
+      const correctAnswer = captchaNum1 + captchaNum2;
+      if (parseInt(captchaAnswer) !== correctAnswer) {
+        setError('Incorrect CAPTCHA answer. Please try again.');
+        generateCaptcha();
+        setLoading(false);
+        return;
+      }
+
       // Email validation for both login and signup
       if (!validateEmail(email)) {
         setError('Please enter a valid email address');
@@ -124,6 +159,7 @@ const LoginForm = ({ onBackToLanding }) => {
     setEmail(demoEmail);
     setPassword(demoPassword);
     setIsLogin(true);
+    generateCaptcha();
   };
 
   return (
@@ -324,6 +360,46 @@ const LoginForm = ({ onBackToLanding }) => {
                   </div>
                 </>
               )}
+
+              {/* CAPTCHA Verification */}
+              <div className="animate-slideDown">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Security Verification
+                </label>
+                <div className="bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="text-lg font-bold text-gray-800 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200">
+                      {captchaNum1} + {captchaNum2} = ?
+                    </div>
+                    <button
+                      type="button"
+                      onClick={generateCaptcha}
+                      className="text-cyan-600 hover:text-cyan-700 text-sm font-medium flex items-center"
+                      title="Refresh CAPTCHA"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </button>
+                  </div>
+                  <input
+                    type="number"
+                    value={captchaAnswer}
+                    onChange={(e) => setCaptchaAnswer(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200 bg-white"
+                    placeholder="Enter the answer"
+                    required
+                  />
+                  {captchaAnswer && parseInt(captchaAnswer) === (captchaNum1 + captchaNum2) && (
+                    <p className="text-xs text-green-600 mt-2 flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Correct!
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div>
