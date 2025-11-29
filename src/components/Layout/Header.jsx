@@ -1,12 +1,23 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { LogOut, User, Bell, Settings } from 'lucide-react';
 import NotificationCenter from '../Notifications/NotificationCenter';
+import { getNotifications } from '../../lib/mockData';
 
 const Header = () => {
-  const { userProfile, signOut } = useAuth();
+  const { userProfile, user, signOut } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Load unread notification count
+  useEffect(() => {
+    if (user) {
+      const notifications = getNotifications(user.id);
+      const unread = notifications.filter(n => !n.read).length;
+      setUnreadCount(unread);
+    }
+  }, [user, showNotifications]); // Refresh when notifications panel closes
 
   const handleSignOut = async () => {
     try {
@@ -57,9 +68,11 @@ const Header = () => {
               className="relative p-2 text-gray-400 hover:text-blue-600 transition-all duration-200 hover:bg-blue-50 rounded-lg"
             >
               <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                3
-              </span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
             </button>
             
             <div className="flex items-center space-x-3">
@@ -95,7 +108,15 @@ const Header = () => {
       
       <NotificationCenter 
         isOpen={showNotifications} 
-        onClose={() => setShowNotifications(false)} 
+        onClose={() => {
+          setShowNotifications(false);
+          // Refresh unread count when closing
+          if (user) {
+            const notifications = getNotifications(user.id);
+            const unread = notifications.filter(n => !n.read).length;
+            setUnreadCount(unread);
+          }
+        }}
       />
     </header>
   );
