@@ -24,6 +24,7 @@ const LandingPage = ({ onShowLogin }) => {
   const [scrollY, setScrollY] = useState(0);
   const [navShrink, setNavShrink] = useState(false);
   const [visibleSections, setVisibleSections] = useState(new Set());
+  const [showDemoModal, setShowDemoModal] = useState(false);
   const [counters, setCounters] = useState({
     students: 0,
     companies: 0,
@@ -217,7 +218,10 @@ const LandingPage = ({ onShowLogin }) => {
                 Start Tracking
                 <Rocket className="ml-2 w-5 h-5 group-hover:translate-x-1 group-hover:rotate-12 transition-all duration-300" />
               </button>
-              <button className="group bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/20 transition-all duration-500 flex items-center border border-white/30 w-full sm:w-auto justify-center transform hover:-translate-y-1 hover:border-white/50">
+              <button 
+                onClick={() => setShowDemoModal(true)}
+                className="group bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/20 transition-all duration-500 flex items-center border border-white/30 w-full sm:w-auto justify-center transform hover:-translate-y-1 hover:border-white/50"
+              >
                 <Play className="mr-2 w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                 Watch Demo
               </button>
@@ -568,6 +572,60 @@ const LandingPage = ({ onShowLogin }) => {
           </button>
         </div>
       </section>
+
+      {/* Demo Video Modal */}
+      {showDemoModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-scaleIn">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowDemoModal(false)}
+              className="absolute top-4 right-4 z-10 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 hover:scale-110 transition-all duration-300 shadow-lg"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            {/* Video Header */}
+            <div className="bg-gradient-to-r from-cyan-500 to-blue-600 p-6 text-white">
+              <h3 className="text-2xl font-bold mb-2">PlacementHub Demo</h3>
+              <p className="text-blue-100">See how our platform transforms the placement experience</p>
+            </div>
+            
+            {/* Video Content */}
+            <div className="aspect-video bg-gray-900 relative">
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                title="PlacementHub Demo Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            
+            {/* Modal Footer */}
+            <div className="p-6 bg-gray-50 border-t border-gray-200">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Ready to get started?</h4>
+                  <p className="text-sm text-gray-600">Join thousands of successful students today!</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowDemoModal(false);
+                    onShowLogin();
+                  }}
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 font-semibold flex items-center whitespace-nowrap"
+                >
+                  Sign Up Now
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 py-12 sm:py-16">
