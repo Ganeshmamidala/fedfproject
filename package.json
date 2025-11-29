@@ -2,6 +2,7 @@
   "name": "vite-react-javascript-placement-tracker",
   "private": true,
   "version": "0.0.0",
+  "author": "Ganesh Mamidala",
   "homepage": "https://Ganeshmamidala.github.io/fedfproject/",
   "type": "module",
   "scripts": {
