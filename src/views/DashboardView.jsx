@@ -7,7 +7,7 @@ import AdvancedAnalytics from '../components/Analytics/AdvancedAnalytics';
 import { KeyboardShortcutsHelp, useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.jsx';
 import { Keyboard } from 'lucide-react';
 
-const DashboardView = () => {
+const DashboardView = ({ onNavigate }) => {
   const { userProfile } = useAuth();
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
@@ -100,13 +100,22 @@ const DashboardView = () => {
             <div className="space-y-3">
               {userProfile?.role === 'student' && (
                 <>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => onNavigate?.('browse-jobs')}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     Browse New Jobs
                   </button>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => onNavigate?.('profile')}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     Update Profile
                   </button>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => onNavigate?.('my-applications')}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     View Applications
                   </button>
                 </>
@@ -114,13 +123,22 @@ const DashboardView = () => {
               
               {userProfile?.role === 'employer' && (
                 <>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => onNavigate?.('post-job')}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     Post New Job
                   </button>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => onNavigate?.('my-jobs')}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     Review Applications
                   </button>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => onNavigate?.('company-profile')}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     Company Profile
                   </button>
                 </>
@@ -128,13 +146,22 @@ const DashboardView = () => {
               
               {userProfile?.role === 'placement_officer' && (
                 <>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
-                    Add Placement Record
+                  <button 
+                    onClick={() => onNavigate?.('interview-scheduling')}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
+                    Schedule Interviews
                   </button>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => onNavigate?.('analytics')}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     Generate Report
                   </button>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => setShowAnalytics(true)}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     View Analytics
                   </button>
                 </>
@@ -142,13 +169,22 @@ const DashboardView = () => {
               
               {userProfile?.role === 'admin' && (
                 <>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => onNavigate?.('user-management')}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     Manage Users
                   </button>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => onNavigate?.('analytics')}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     System Settings
                   </button>
-                  <button className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm">
+                  <button 
+                    onClick={() => setShowAnalytics(true)}
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                  >
                     View Reports
                   </button>
                 </>

@@ -50,7 +50,7 @@ const AppContent = () => {
   const renderView = () => {
     switch (activeView) {
       case 'dashboard':
-        return <DashboardView />;
+        return <DashboardView onNavigate={setActiveView} />;
       case 'browse-jobs':
         return <BrowseJobsView />;
       case 'my-applications':
@@ -60,13 +60,21 @@ const AppContent = () => {
       case 'my-jobs':
         return <MyJobsView />;
       case 'profile':
-        return <ProfileView />;
+        return <ProfileView onNavigate={setActiveView} />;
       case 'analytics':
         return <AnalyticsView />;
       case 'users':
         return <UserManagementView />;
+      case 'user-management':
+        return <UserManagementView />;
       case 'company-profile':
         return <CompanyProfileView />;
+      case 'document-management':
+        return <DocumentManagementView />;
+      case 'messaging':
+        return <MessagingView />;
+      case 'interview-scheduling':
+        return <InterviewSchedulingView />;
       default:
         return (
           <div className="p-6">

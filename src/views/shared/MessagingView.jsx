@@ -153,10 +153,18 @@ const MessagingView = () => {
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                      <button 
+                        onClick={() => alert('Voice call feature - Coming soon!')}
+                        className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Voice call"
+                      >
                         <Phone className="w-5 h-5" />
                       </button>
-                      <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                      <button 
+                        onClick={() => alert('Video call feature - Coming soon!')}
+                        className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Video call"
+                      >
                         <Video className="w-5 h-5" />
                       </button>
                     </div>

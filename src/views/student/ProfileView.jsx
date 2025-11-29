@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { User, Mail, Phone, MapPin, Calendar, Upload, Save, CreditCard as Edit3, GraduationCap, Award, FileText } from 'lucide-react';
 import { getProfile, updateProfile } from '../../lib/mockData';
 
-const ProfileView = () => {
+const ProfileView = ({ onNavigate }) => {
   const { user, userProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -313,7 +313,10 @@ const ProfileView = () => {
             <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Documents</h3>
               <p className="text-sm text-gray-600">Upload your resume and other documents in the Document Management section</p>
-              <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+              <button 
+                onClick={() => onNavigate?.('document-management')}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+              >
                 Go to Documents
               </button>
             </div>

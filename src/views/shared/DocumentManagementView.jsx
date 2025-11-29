@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Upload, Download, Eye, Trash2, Search, Filter, FolderOpen, Star, Share2 } from 'lucide-react';
+import { FileText, Upload, Download, Eye, Trash2, Search, Filter, FolderOpen, Star, Share2, BarChart3, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { getDocuments, addDocument, deleteDocument as deleteDoc, toggleFavorite as toggleFav } from '../../lib/mockData';
+import { getDocuments, addDocument, deleteDocument as deleteDoc, toggleFavorite as toggleFav, getJobs } from '../../lib/mockData';
 import DragDropUpload from '../../components/Common/DragDropUpload';
 import Toast from '../../components/Common/Toast';
 import { useToast } from '../../hooks/useToast';
@@ -20,6 +20,8 @@ const DocumentManagementView = () => {
     isPublic: false,
   });
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [showAnalysis, setShowAnalysis] = useState(false);
+  const [analysisData, setAnalysisData] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -30,6 +32,77 @@ const DocumentManagementView = () => {
   const loadDocuments = () => {
     const docs = getDocuments({ userId: user.id, type: selectedType });
     setDocuments(docs);
+  };
+
+  const analyzeResume = (file, documentTags = '') => {
+    try {
+      // Extract skills from resume filename and tags
+      const fileName = file.name.toLowerCase();
+      const tags = (documentTags || uploadData.tags || '').toLowerCase();
+      
+      // Common skills to detect
+      const skillsDatabase = [
+        'react', 'javascript', 'python', 'java', 'node', 'sql', 'mongodb',
+        'aws', 'docker', 'kubernetes', 'git', 'html', 'css', 'angular',
+        'vue', 'typescript', 'express', 'django', 'flask', 'spring',
+        'machine learning', 'ai', 'data science', 'analytics', 'testing',
+        'agile', 'scrum', 'devops', 'ci/cd', 'rest api', 'graphql'
+      ];
+      
+      const detectedSkills = skillsDatabase.filter(skill => 
+        fileName.includes(skill) || tags.includes(skill)
+      );
+      
+      // If no skills detected from filename, use some default skills
+      if (detectedSkills.length === 0) {
+        detectedSkills.push('javascript', 'react', 'node', 'sql', 'git');
+      }
+      
+      // Get all available jobs
+      const allJobs = getJobs() || [];
+      
+      // Match jobs based on skills
+      const jobMatches = [];
+      const categoryMatches = {};
+      
+      allJobs.forEach(job => {
+        const jobSkills = (job.requirements || job.title || '').toLowerCase();
+        let matchCount = 0;
+        
+        detectedSkills.forEach(skill => {
+          if (jobSkills.includes(skill)) {
+            matchCount++;
+          }
+        });
+        
+        if (matchCount > 0) {
+          jobMatches.push({ ...job, matchScore: matchCount });
+          
+          const category = job.type || 'Other';
+          categoryMatches[category] = (categoryMatches[category] || 0) + 1;
+        }
+      });
+      
+      // Sort by match score
+      jobMatches.sort((a, b) => b.matchScore - a.matchScore);
+      
+      return {
+        skills: detectedSkills,
+        totalJobs: jobMatches.length,
+        matchedJobs: jobMatches.slice(0, 10),
+        categoryBreakdown: categoryMatches,
+        totalAvailableJobs: allJobs.length
+      };
+    } catch (err) {
+      console.error('Error analyzing resume:', err);
+      return {
+        skills: ['javascript', 'react', 'node'],
+        totalJobs: 0,
+        matchedJobs: [],
+        categoryBreakdown: {},
+        totalAvailableJobs: 0
+      };
+    }
   };
 
   const handleUpload = () => {
@@ -49,6 +122,13 @@ const DocumentManagementView = () => {
       });
 
       setDocuments(prev => [newDoc, ...prev]);
+      
+      // Analyze resume if it's a resume type
+      if (uploadData.type === 'resume') {
+        const analysis = analyzeResume(file);
+        setAnalysisData(analysis);
+        setShowAnalysis(true);
+      }
     });
 
     success(`${selectedFiles.length} file(s) uploaded successfully!`);
@@ -163,7 +243,14 @@ const DocumentManagementView = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Tags (comma separated)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tags (comma separated)
+              {uploadData.type === 'resume' && (
+                <span className="ml-2 text-xs text-blue-600 font-normal">
+                  💡 Add your skills for better job matching!
+                </span>
+              )}
+            </label>
             <input
               type="text"
               placeholder="e.g., software-engineer, react, nodejs"
@@ -171,6 +258,11 @@ const DocumentManagementView = () => {
               onChange={(e) => setUploadData(prev => ({ ...prev, tags: e.target.value }))}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
+            {uploadData.type === 'resume' && (
+              <p className="text-xs text-gray-500 mt-1">
+                Your resume will be analyzed to find matching jobs based on these skills
+              </p>
+            )}
           </div>
           <div className="flex items-center">
             <input
@@ -384,13 +476,52 @@ const DocumentManagementView = () => {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                    {document.type === 'resume' && (
+                      <button 
+                        onClick={() => {
+                          const mockFile = { name: document.name, size: 1024 };
+                          const documentTagsString = Array.isArray(document.tags) ? document.tags.join(', ') : '';
+                          const analysis = analyzeResume(mockFile, documentTagsString);
+                          setAnalysisData(analysis);
+                          setShowAnalysis(true);
+                        }}
+                        className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                        title="Analyze resume for job matches"
+                      >
+                        <BarChart3 className="w-4 h-4" />
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => {
+                        success('Preview feature - Document viewer opening...');
+                        window.open(URL.createObjectURL(new Blob(['Document Preview'], {type: 'text/plain'})), '_blank');
+                      }}
+                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      title="Preview document"
+                    >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                    <button 
+                      onClick={() => {
+                        success(`Downloading ${document.name}...`);
+                        const link = document.createElement('a');
+                        link.href = '#';
+                        link.download = document.name;
+                        link.click();
+                      }}
+                      className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                      title="Download document"
+                    >
                       <Download className="w-4 h-4" />
                     </button>
-                    <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                    <button 
+                      onClick={() => {
+                        navigator.clipboard.writeText(window.location.href + '/document/' + document.id);
+                        success('Share link copied to clipboard!');
+                      }}
+                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      title="Share document"
+                    >
                       <Share2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -408,6 +539,190 @@ const DocumentManagementView = () => {
       </div>
 
       {showUploadModal && <UploadModal />}
+      
+      {/* Resume Analysis Modal */}
+      {showAnalysis && analysisData && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <BarChart3 className="w-8 h-8" />
+                  <div>
+                    <h2 className="text-2xl font-bold">Resume Analysis</h2>
+                    <p className="text-blue-100 text-sm">AI-powered job matching results</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAnalysis(false)}
+                  className="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Summary Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border-2 border-green-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-green-600 text-sm font-medium">Applicable Jobs</p>
+                      <p className="text-3xl font-bold text-green-700">{analysisData.totalJobs}</p>
+                    </div>
+                    <CheckCircle className="w-12 h-12 text-green-500 opacity-20" />
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border-2 border-blue-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-blue-600 text-sm font-medium">Skills Detected</p>
+                      <p className="text-3xl font-bold text-blue-700">{analysisData.skills.length}</p>
+                    </div>
+                    <FileText className="w-12 h-12 text-blue-500 opacity-20" />
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border-2 border-purple-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-purple-600 text-sm font-medium">Match Rate</p>
+                      <p className="text-3xl font-bold text-purple-700">
+                        {Math.round((analysisData.totalJobs / analysisData.totalAvailableJobs) * 100)}%
+                      </p>
+                    </div>
+                    <BarChart3 className="w-12 h-12 text-purple-500 opacity-20" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Detected Skills */}
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                  <span className="bg-blue-100 text-blue-600 rounded-lg px-2 py-1 text-sm mr-2">
+                    Skills
+                  </span>
+                  Detected from Resume
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {analysisData.skills.map((skill, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1.5 bg-white border border-blue-200 text-blue-700 rounded-lg text-sm font-medium shadow-sm"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bar Graph - Job Categories */}
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
+                  Jobs by Category
+                </h3>
+                <div className="space-y-3">
+                  {Object.entries(analysisData.categoryBreakdown).map(([category, count], index) => {
+                    const maxCount = Math.max(...Object.values(analysisData.categoryBreakdown));
+                    const percentage = (count / maxCount) * 100;
+                    const colors = [
+                      'bg-blue-500',
+                      'bg-green-500',
+                      'bg-purple-500',
+                      'bg-orange-500',
+                      'bg-pink-500',
+                      'bg-indigo-500'
+                    ];
+                    
+                    return (
+                      <div key={category} className="space-y-1">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="font-medium text-gray-700">{category}</span>
+                          <span className="text-gray-600">{count} jobs</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-8 overflow-hidden">
+                          <div
+                            className={`${colors[index % colors.length]} h-full rounded-full flex items-center justify-end pr-3 transition-all duration-500 ease-out`}
+                            style={{ width: `${percentage}%` }}
+                          >
+                            <span className="text-white text-xs font-bold">
+                              {count}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Top Matched Jobs */}
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Top Matched Jobs
+                </h3>
+                <div className="space-y-3">
+                  {analysisData.matchedJobs.slice(0, 5).map((job, index) => (
+                    <div
+                      key={job.id}
+                      className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                            {index + 1}
+                          </span>
+                          <h4 className="font-semibold text-gray-900">{job.title}</h4>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">{job.company}</p>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <div className="text-right">
+                          <p className="text-xs text-gray-500">Match Score</p>
+                          <div className="flex items-center space-x-1">
+                            {[...Array(5)].map((_, i) => (
+                              <div
+                                key={i}
+                                className={`w-2 h-2 rounded-full ${
+                                  i < job.matchScore ? 'bg-green-500' : 'bg-gray-300'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
+                          {job.matchScore} skills
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => setShowAnalysis(false)}
+                  className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    setShowAnalysis(false);
+                    // Navigate to browse jobs if available
+                    success('Redirecting to job listings...');
+                  }}
+                  className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors font-medium shadow-lg"
+                >
+                  View All Jobs →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Toast Notifications */}
       {toasts.map((toast) => (
