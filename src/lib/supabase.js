@@ -69,6 +69,12 @@ const saveMockUsers = (users) => {
 // Initialize mock users from localStorage
 let mockUsers = loadMockUsers();
 
+// Export function to ensure users are loaded (can be called from main.jsx)
+export const ensureMockUsersLoaded = () => {
+  mockUsers = loadMockUsers();
+  return mockUsers;
+};
+
 // Check if we're using placeholder values (demo mode)
 const isDemoMode = supabaseUrl === 'https://placeholder.supabase.co';
 
