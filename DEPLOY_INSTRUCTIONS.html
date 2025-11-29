@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy PlacementHub Backend to Render</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .step-content {
+            color: #666;
+            line-height: 1.6;
+            margin-left: 40px;
+        }
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            text-align: center;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        .credential {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Deploy PlacementHub Backend</h1>
+        <p class="subtitle">Follow these simple steps to deploy your MongoDB backend to Render.com (100% FREE)</p>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">1</span>
+                Create Render Account
+            </div>
+            <div class="step-content">
+                Go to <strong>Render.com</strong> and sign up with your <strong>GitHub account</strong>. It's completely free, no credit card required.
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">2</span>
+                Connect Repository
+            </div>
+            <div class="step-content">
+                Click <strong>"New +"</strong> → <strong>"Web Service"</strong><br>
+                Connect your repository: <code>Ganeshmamidala/fedfproject</code>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">3</span>
+                Auto-Configuration
+            </div>
+            <div class="step-content">
+                Render will automatically detect the <code>render.yaml</code> file and pre-fill all settings including MongoDB connection!
+            </div>
+        </div>
+
+        <div class="success-box">
+            <strong>✅ MongoDB Credentials Already Configured:</strong><br>
+            <div class="credential">Database: placementhub</div>
+            <div class="credential">Connection: MongoDB Atlas (512MB Free)</div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">4</span>
+                Deploy!
+            </div>
+            <div class="step-content">
+                Click <strong>"Create Web Service"</strong><br>
+                Wait 2-3 minutes for deployment<br>
+                Your API will be live at: <code>https://placementhub-api.onrender.com</code>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>📌 After Deployment:</strong><br>
+            Copy your Render URL and share it with me. I'll then update the frontend to connect to your MongoDB backend and deploy to GitHub Pages!
+        </div>
+
+        <a href="https://dashboard.render.com/register" target="_blank" class="btn">
+            🚀 Deploy Now on Render.com
+        </a>
+
+        <div class="success-box" style="margin-top: 20px;">
+            <strong>🔐 Default Admin Login (After Deployment):</strong><br>
+            Email: <code>admin@placementhub.edu</code><br>
+            Password: <code>admin123</code>
+        </div>
+    </div>
+</body>
+</html>
