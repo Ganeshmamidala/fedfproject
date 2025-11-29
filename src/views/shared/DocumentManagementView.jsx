@@ -22,6 +22,8 @@ const DocumentManagementView = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [analysisData, setAnalysisData] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewDocument, setPreviewDocument] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -493,8 +495,8 @@ const DocumentManagementView = () => {
                     )}
                     <button 
                       onClick={() => {
-                        success('Preview feature - Document viewer opening...');
-                        window.open(URL.createObjectURL(new Blob(['Document Preview'], {type: 'text/plain'})), '_blank');
+                        setPreviewDocument(document);
+                        setShowPreview(true);
                       }}
                       className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                       title="Preview document"
@@ -717,6 +719,226 @@ const DocumentManagementView = () => {
                   className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors font-medium shadow-lg"
                 >
                   View All Jobs →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Document Preview Modal */}
+      {showPreview && previewDocument && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Eye className="w-6 h-6" />
+                  <div>
+                    <h2 className="text-xl font-bold">{previewDocument.name}</h2>
+                    <p className="text-blue-100 text-sm mt-1">
+                      {previewDocument.type.replace('-', ' ').toUpperCase()} • {previewDocument.size}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowPreview(false)}
+                  className="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Document Info */}
+            <div className="p-6 border-b border-gray-200 bg-gray-50">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <p className="text-gray-500">Type</p>
+                  <p className="font-semibold text-gray-900">{previewDocument.type.replace('-', ' ')}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Size</p>
+                  <p className="font-semibold text-gray-900">{previewDocument.size}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Uploaded</p>
+                  <p className="font-semibold text-gray-900">
+                    {new Date(previewDocument.uploadDate).toLocaleDateString()}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Status</p>
+                  <p className={`font-semibold ${previewDocument.isPublic ? 'text-green-600' : 'text-gray-600'}`}>
+                    {previewDocument.isPublic ? 'Public' : 'Private'}
+                  </p>
+                </div>
+              </div>
+              
+              {previewDocument.tags && previewDocument.tags.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-gray-500 text-sm mb-2">Tags</p>
+                  <div className="flex flex-wrap gap-2">
+                    {previewDocument.tags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Preview Content */}
+            <div className="flex-1 overflow-auto p-8 bg-gray-50">
+              <div className="bg-white rounded-xl shadow-lg p-8 max-w-3xl mx-auto border border-gray-200">
+                {previewDocument.type === 'resume' && (
+                  <div className="space-y-6">
+                    <div className="text-center border-b pb-6">
+                      <h1 className="text-3xl font-bold text-gray-900 mb-2">John Doe</h1>
+                      <p className="text-gray-600">Software Developer</p>
+                      <div className="flex justify-center gap-4 mt-3 text-sm text-gray-500">
+                        <span>📧 john.doe@email.com</span>
+                        <span>📱 +91 98765 43210</span>
+                        <span>📍 Bangalore, India</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900 mb-3">Professional Summary</h2>
+                      <p className="text-gray-700 leading-relaxed">
+                        Experienced software developer with 3+ years of expertise in full-stack development.
+                        Proficient in React, Node.js, and modern web technologies. Strong problem-solving skills
+                        and passion for creating efficient, scalable applications.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900 mb-3">Skills</h2>
+                      <div className="flex flex-wrap gap-2">
+                        {previewDocument.tags && previewDocument.tags.map((skill, idx) => (
+                          <span key={idx} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium border border-blue-200">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900 mb-3">Experience</h2>
+                      <div className="space-y-4">
+                        <div className="border-l-2 border-blue-500 pl-4">
+                          <h3 className="font-semibold text-gray-900">Software Developer</h3>
+                          <p className="text-sm text-gray-600">Tech Corp • 2022 - Present</p>
+                          <p className="text-gray-700 mt-2">Developed and maintained web applications using React and Node.js</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900 mb-3">Education</h2>
+                      <div className="border-l-2 border-purple-500 pl-4">
+                        <h3 className="font-semibold text-gray-900">Bachelor of Technology</h3>
+                        <p className="text-sm text-gray-600">Computer Science • 2019 - 2023</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {previewDocument.type === 'cover-letter' && (
+                  <div className="space-y-6">
+                    <div className="text-right text-sm text-gray-600">
+                      {new Date(previewDocument.uploadDate).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <p className="text-gray-700">Dear Hiring Manager,</p>
+                      <p className="text-gray-700 leading-relaxed">
+                        I am writing to express my strong interest in the Software Engineer position at your company.
+                        With my background in full-stack development and passion for creating innovative solutions,
+                        I am confident I would be a valuable addition to your team.
+                      </p>
+                      <p className="text-gray-700 leading-relaxed">
+                        My experience includes developing scalable web applications using React, Node.js, and modern
+                        development practices. I am particularly excited about the opportunity to contribute to your
+                        company's mission and work with cutting-edge technologies.
+                      </p>
+                      <p className="text-gray-700 leading-relaxed">
+                        Thank you for considering my application. I look forward to discussing how my skills and
+                        experience align with your team's needs.
+                      </p>
+                      <p className="text-gray-700">
+                        Sincerely,<br />
+                        John Doe
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {previewDocument.type === 'certificate' && (
+                  <div className="text-center space-y-6 py-8">
+                    <div className="text-6xl">🏆</div>
+                    <h1 className="text-3xl font-bold text-gray-900">Certificate of Completion</h1>
+                    <p className="text-xl text-gray-700">This is to certify that</p>
+                    <h2 className="text-4xl font-bold text-blue-600">John Doe</h2>
+                    <p className="text-lg text-gray-700">has successfully completed</p>
+                    <h3 className="text-2xl font-semibold text-gray-900">
+                      {previewDocument.tags && previewDocument.tags[0] ? 
+                        previewDocument.tags[0].toUpperCase() + ' Certification' : 
+                        'Professional Certification'}
+                    </h3>
+                    <div className="mt-8 pt-8 border-t border-gray-300">
+                      <p className="text-sm text-gray-600">
+                        Issued on {new Date(previewDocument.uploadDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {!['resume', 'cover-letter', 'certificate'].includes(previewDocument.type) && (
+                  <div className="text-center py-12">
+                    <FileText className="w-20 h-20 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Document Preview</h3>
+                    <p className="text-gray-500">
+                      {previewDocument.name}
+                    </p>
+                    <p className="text-sm text-gray-400 mt-2">
+                      Preview available for resume, cover letter, and certificate types
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer Actions */}
+            <div className="p-6 bg-gray-50 border-t border-gray-200 flex justify-between items-center">
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <Download className="w-4 h-4" />
+                <span>{previewDocument.downloadCount || 0} downloads</span>
+              </div>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowPreview(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    success(`Downloading ${previewDocument.name}...`);
+                    setShowPreview(false);
+                  }}
+                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors"
+                >
+                  Download
                 </button>
               </div>
             </div>
