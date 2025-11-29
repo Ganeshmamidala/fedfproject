@@ -66,7 +66,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200/50 shadow-lg">
+    <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200/50 shadow-lg relative z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -121,27 +121,27 @@ const Header = () => {
                   
                   {/* Settings Dropdown */}
                   {showSettings && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50 animate-scaleIn">
+                    <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-[60] animate-scaleIn origin-top-right">
                       <div className="px-4 py-3 border-b border-gray-100">
                         <p className="text-sm font-semibold text-gray-900">Settings</p>
                       </div>
-                      <button className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-blue-50 transition-colors flex items-center">
+                      <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-colors flex items-center">
                         <User className="h-4 w-4 mr-3 text-gray-400" />
                         Profile Settings
                       </button>
-                      <button className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-blue-50 transition-colors flex items-center">
+                      <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-colors flex items-center">
                         <Bell className="h-4 w-4 mr-3 text-gray-400" />
                         Notification Preferences
                       </button>
-                      <button className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-blue-50 transition-colors flex items-center">
+                      <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-colors flex items-center">
                         <Settings className="h-4 w-4 mr-3 text-gray-400" />
                         Account Settings
                       </button>
-                      <div className="border-t border-gray-100 mt-2 pt-2">
-                        <button className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-blue-50 transition-colors">
+                      <div className="border-t border-gray-100 mt-1 pt-1">
+                        <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-colors">
                           Privacy & Security
                         </button>
-                        <button className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-blue-50 transition-colors">
+                        <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-colors">
                           Help & Support
                         </button>
                       </div>
@@ -164,7 +164,7 @@ const Header = () => {
       {/* Close dropdowns when clicking outside */}
       {(showNotifications || showSettings) && (
         <div 
-          className="fixed inset-0 z-40" 
+          className="fixed inset-0 z-30" 
           onClick={() => {
             setShowNotifications(false);
             setShowSettings(false);

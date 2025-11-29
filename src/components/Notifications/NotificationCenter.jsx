@@ -83,15 +83,9 @@ const NotificationCenter = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Backdrop */}
-      <div 
-        className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]" 
-        onClick={onClose}
-      />
-      
       {/* Notification Panel */}
       <div 
-        className="fixed top-20 right-8 bg-white rounded-2xl shadow-2xl border border-gray-200 w-96 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-6rem)] overflow-hidden z-50 animate-scaleIn flex flex-col"
+        className="fixed top-16 right-4 sm:right-8 bg-white rounded-2xl shadow-2xl border border-gray-200 w-80 sm:w-96 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-6rem)] overflow-hidden z-[60] animate-scaleIn flex flex-col"
         style={{ transformOrigin: 'top right' }}
         onClick={(e) => e.stopPropagation()}
       >
