@@ -7,15 +7,23 @@ const NotificationCenter = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState([]);
 
+  console.log('NotificationCenter render - isOpen:', isOpen, 'user:', user);
+
   useEffect(() => {
     if (user && isOpen) {
+      console.log('Loading notifications for user:', user.id);
       loadNotifications();
     }
   }, [user, isOpen]);
 
   const loadNotifications = () => {
-    const notifs = getNotifications(user.id);
-    setNotifications(notifs);
+    try {
+      const notifs = getNotifications(user.id);
+      console.log('Loaded notifications in panel:', notifs);
+      setNotifications(notifs);
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
   };
 
   const markAsRead = (id) => {

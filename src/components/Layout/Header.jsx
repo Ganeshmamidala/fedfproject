@@ -13,11 +13,22 @@ const Header = () => {
   // Load unread notification count
   useEffect(() => {
     if (user) {
-      const notifications = getNotifications(user.id);
-      const unread = notifications.filter(n => !n.read).length;
-      setUnreadCount(unread);
+      try {
+        const notifications = getNotifications(user.id);
+        console.log('Loaded notifications:', notifications);
+        const unread = notifications.filter(n => !n.read).length;
+        console.log('Unread count:', unread);
+        setUnreadCount(unread);
+      } catch (error) {
+        console.error('Error loading notifications:', error);
+      }
     }
   }, [user, showNotifications]); // Refresh when notifications panel closes
+
+  const handleNotificationClick = () => {
+    console.log('Notification bell clicked, current state:', showNotifications);
+    setShowNotifications(!showNotifications);
+  };
 
   const handleSignOut = async () => {
     try {
@@ -64,8 +75,10 @@ const Header = () => {
 
           <div className="flex items-center space-x-4">
             <button 
-              onClick={() => setShowNotifications(!showNotifications)}
+              onClick={handleNotificationClick}
               className="relative p-2 text-gray-400 hover:text-blue-600 transition-all duration-200 hover:bg-blue-50 rounded-lg"
+              title="Notifications"
+              type="button"
             >
               <Bell className="h-5 w-5" />
               {unreadCount > 0 && (
