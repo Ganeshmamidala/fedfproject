@@ -4,6 +4,7 @@ import LoginForm from './components/Auth/LoginForm';
 import LandingPage from './components/Landing/LandingPage';
 import Header from './components/Layout/Header';
 import Sidebar from './components/Layout/Sidebar';
+import PageTransition from './components/Layout/PageTransition';
 import DashboardView from './views/DashboardView';
 import BrowseJobsView from './views/student/BrowseJobsView';
 import MyApplicationsView from './views/student/MyApplicationsView';
@@ -36,15 +37,20 @@ const AppContent = () => {
   }
 
   if (!user || !userProfile) {
-    if (showLogin) {
-      console.log('Showing login form');
-      return <LoginForm onBackToLanding={() => setShowLogin(false)} />;
-    }
-    console.log('Showing landing page');
-    return <LandingPage onShowLogin={() => {
-      console.log('Sign In clicked');
-      setShowLogin(true);
-    }} />;
+    return (
+      <div className="transition-opacity duration-500 ease-in-out">
+        <PageTransition transitionKey={showLogin ? 'login' : 'landing'}>
+          {showLogin ? (
+            <LoginForm onBackToLanding={() => setShowLogin(false)} />
+          ) : (
+            <LandingPage onShowLogin={() => {
+              console.log('Sign In clicked');
+              setShowLogin(true);
+            }} />
+          )}
+        </PageTransition>
+      </div>
+    );
   }
 
   const renderView = () => {
@@ -96,8 +102,10 @@ const AppContent = () => {
       <Header />
       <div className="flex">
         <Sidebar activeView={activeView} setActiveView={setActiveView} />
-        <main className="flex-1">
-          {renderView()}
+        <main className="flex-1 overflow-hidden">
+          <PageTransition transitionKey={activeView}>
+            {renderView()}
+          </PageTransition>
         </main>
       </div>
     </div>

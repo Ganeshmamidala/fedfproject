@@ -19,6 +19,24 @@ const LoginForm = ({ onBackToLanding }) => {
 
   const { signIn, signUp } = useAuth();
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    return {
+      length: password.length >= 6,
+      hasUpperCase,
+      hasLowerCase,
+      hasNumber,
+      isValid: password.length >= 6 && hasUpperCase && hasLowerCase && hasNumber
+    };
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -26,25 +44,47 @@ const LoginForm = ({ onBackToLanding }) => {
     setSuccess('');
 
     try {
+      // Email validation for both login and signup
+      if (!validateEmail(email)) {
+        setError('Please enter a valid email address');
+        setLoading(false);
+        return;
+      }
+
       if (isLogin) {
+        if (!password) {
+          setError('Password is required');
+          setLoading(false);
+          return;
+        }
         const { error } = await signIn(email, password);
         if (error) {
-          setError(error.message);
+          setError(error.message || 'Invalid email or password');
+        } else {
+          setSuccess('Login successful! Redirecting...');
         }
       } else {
         // Registration validation
+        if (!fullName || fullName.trim().length < 2) {
+          setError('Please enter your full name (at least 2 characters)');
+          setLoading(false);
+          return;
+        }
+        
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.isValid) {
+          const errors = [];
+          if (!passwordValidation.length) errors.push('at least 6 characters');
+          if (!passwordValidation.hasUpperCase) errors.push('one uppercase letter');
+          if (!passwordValidation.hasLowerCase) errors.push('one lowercase letter');
+          if (!passwordValidation.hasNumber) errors.push('one number');
+          setError(`Password must contain ${errors.join(', ')}`);
+          setLoading(false);
+          return;
+        }
+
         if (password !== confirmPassword) {
           setError('Passwords do not match');
-          setLoading(false);
-          return;
-        }
-        if (password.length < 6) {
-          setError('Password must be at least 6 characters long');
-          setLoading(false);
-          return;
-        }
-        if (!fullName || fullName.trim() === '') {
-          setError('Please enter your full name');
           setLoading(false);
           return;
         }
@@ -151,11 +191,16 @@ const LoginForm = ({ onBackToLanding }) => {
                       name="fullName"
                       type="text"
                       required={!isLogin}
+                      minLength={2}
+                      maxLength={100}
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
                       placeholder="Enter your full name"
                     />
+                    {!isLogin && fullName && fullName.trim().length < 2 && (
+                      <p className="text-xs text-red-500 mt-1">Name must be at least 2 characters</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -172,11 +217,15 @@ const LoginForm = ({ onBackToLanding }) => {
                     type="email"
                     autoComplete="email"
                     required
+                    maxLength={100}
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value.toLowerCase().trim())}
                     className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
                     placeholder="Enter your email"
                   />
+                  {email && !validateEmail(email) && (
+                    <p className="text-xs text-red-500 mt-1">Please enter a valid email address</p>
+                  )}
                 </div>
               </div>
               
@@ -192,6 +241,8 @@ const LoginForm = ({ onBackToLanding }) => {
                     type={showPassword ? 'text' : 'password'}
                     autoComplete={isLogin ? 'current-password' : 'new-password'}
                     required
+                    minLength={6}
+                    maxLength={50}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 pr-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
@@ -209,6 +260,17 @@ const LoginForm = ({ onBackToLanding }) => {
                     )}
                   </button>
                 </div>
+                {!isLogin && password && (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex items-center text-xs">
+                      <div className={`h-1 flex-1 rounded mr-1 ${password.length >= 6 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                      <div className={`h-1 flex-1 rounded mr-1 ${/[A-Z]/.test(password) ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                      <div className={`h-1 flex-1 rounded mr-1 ${/[a-z]/.test(password) ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                      <div className={`h-1 flex-1 rounded ${/[0-9]/.test(password) ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                    </div>
+                    <p className="text-xs text-gray-600">Password must contain uppercase, lowercase, and number</p>
+                  </div>
+                )}
               </div>
 
               {!isLogin && (

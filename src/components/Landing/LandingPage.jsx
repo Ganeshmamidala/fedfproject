@@ -137,15 +137,14 @@ const LandingPage = ({ onShowLogin }) => {
                 <button
                   key={item}
                   onClick={() => scrollToSection(item.toLowerCase())}
-                  className="text-gray-700 hover:text-cyan-600 font-medium transition-all duration-300 relative group"
+                  className="text-gray-700 hover:text-cyan-600 font-medium transition-all duration-300 relative group link-underline"
                 >
                   {item}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 group-hover:w-full transition-all duration-300"></span>
                 </button>
               ))}
               <button
                 onClick={onShowLogin}
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-2.5 rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 font-medium"
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-2.5 rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-500 font-medium btn-effect transform hover:-translate-y-0.5"
               >
                 Sign In
               </button>
@@ -213,13 +212,13 @@ const LandingPage = ({ onShowLogin }) => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 px-4">
               <button
                 onClick={onShowLogin}
-                className="group bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center w-full sm:w-auto justify-center"
+                className="group bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-500 flex items-center w-full sm:w-auto justify-center btn-effect transform hover:-translate-y-1"
               >
                 Start Tracking
-                <Rocket className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <Rocket className="ml-2 w-5 h-5 group-hover:translate-x-1 group-hover:rotate-12 transition-all duration-300" />
               </button>
-              <button className="group bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/20 transition-all duration-300 flex items-center border border-white/30 w-full sm:w-auto justify-center">
-                <Play className="mr-2 w-5 h-5" />
+              <button className="group bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/20 transition-all duration-500 flex items-center border border-white/30 w-full sm:w-auto justify-center transform hover:-translate-y-1 hover:border-white/50">
+                <Play className="mr-2 w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                 Watch Demo
               </button>
             </div>
@@ -248,15 +247,15 @@ const LandingPage = ({ onShowLogin }) => {
             ].map((stat, index) => (
               <div
                 key={stat.label}
-                className={`bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${
+                className={`bg-white rounded-2xl p-6 sm:p-8 shadow-lg card-hover cursor-pointer group ${
                   visibleSections.has('stats-section') 
                     ? 'opacity-100 translate-y-0' 
                     : 'opacity-0 translate-y-20'
                 }`}
                 style={{ transitionDelay: `${index * 150}ms` }}
               >
-                <div className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r ${stat.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <stat.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+                <div className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r ${stat.color} rounded-xl flex items-center justify-center mb-6 icon-hover`}>
+                  <stat.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white transition-all duration-300" />
                 </div>
                 <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
                   {stat.value.toLocaleString()}+
@@ -284,28 +283,36 @@ const LandingPage = ({ onShowLogin }) => {
             }`}>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4">
-                  <img 
-                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop" 
-                    alt="Students collaborating" 
-                    className="rounded-2xl shadow-xl hover:scale-105 transition-transform duration-500 w-full"
-                  />
-                  <img 
-                    src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=400&h=300&fit=crop" 
-                    alt="Professional interview" 
-                    className="rounded-2xl shadow-xl hover:scale-105 transition-transform duration-500 w-full"
-                  />
+                  <div className="img-hover rounded-2xl overflow-hidden shadow-xl">
+                    <img 
+                      src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop" 
+                      alt="Students collaborating" 
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="img-hover rounded-2xl overflow-hidden shadow-xl">
+                    <img 
+                      src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=400&h=300&fit=crop" 
+                      alt="Professional interview" 
+                      className="w-full"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-4 pt-8">
-                  <img 
-                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&h=300&fit=crop" 
-                    alt="Career counseling" 
-                    className="rounded-2xl shadow-xl hover:scale-105 transition-transform duration-500 w-full"
-                  />
-                  <img 
-                    src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=400&fit=crop" 
-                    alt="Success celebration" 
-                    className="rounded-2xl shadow-xl hover:scale-105 transition-transform duration-500 w-full"
-                  />
+                  <div className="img-hover rounded-2xl overflow-hidden shadow-xl">
+                    <img 
+                      src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&h=300&fit=crop" 
+                      alt="Career counseling" 
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="img-hover rounded-2xl overflow-hidden shadow-xl">
+                    <img 
+                      src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=400&fit=crop" 
+                      alt="Success celebration" 
+                      className="w-full"
+                    />
+                  </div>
                 </div>
               </div>
               
@@ -353,10 +360,10 @@ const LandingPage = ({ onShowLogin }) => {
 
               <button 
                 onClick={onShowLogin}
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-300 font-semibold inline-flex items-center"
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-500 font-semibold inline-flex items-center btn-effect group transform hover:-translate-y-1"
               >
                 More About Us
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
               </button>
             </div>
           </div>
@@ -390,15 +397,15 @@ const LandingPage = ({ onShowLogin }) => {
             ].map((feature, index) => (
               <div
                 key={index}
-                className={`bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 group cursor-pointer transform hover:-translate-y-2 ${
+                className={`bg-white rounded-2xl p-6 sm:p-8 shadow-lg card-hover group cursor-pointer ${
                   visibleSections.has('features') 
                     ? 'opacity-100 translate-y-0' 
                     : 'opacity-0 translate-y-20'
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <div className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                  <feature.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+                <div className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center mb-6 icon-hover`}>
+                  <feature.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white transition-all duration-300" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 group-hover:text-cyan-600 transition-colors">
                   {feature.title}
@@ -431,12 +438,36 @@ const LandingPage = ({ onShowLogin }) => {
           {/* Logo Carousel */}
           <div className="relative overflow-hidden">
             <div className="flex animate-scroll space-x-8 sm:space-x-12 py-8">
-              {[...Array(10)].map((_, i) => (
+              {[
+                { name: 'Google', logo: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' },
+                { name: 'Microsoft', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/512px-Microsoft_logo.svg.png' },
+                { name: 'Amazon', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/603px-Amazon_logo.svg.png' },
+                { name: 'Meta', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/512px-Meta_Platforms_Inc._logo.svg.png' },
+                { name: 'Apple', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png' },
+                { name: 'Netflix', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/512px-Netflix_2015_logo.svg.png' },
+                { name: 'Tesla', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Tesla_Motors.svg/512px-Tesla_Motors.svg.png' },
+                { name: 'Adobe', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Adobe_Corporate_Logo.svg/512px-Adobe_Corporate_Logo.svg.png' },
+                { name: 'IBM', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/512px-IBM_logo.svg.png' },
+                { name: 'Intel', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Intel_logo_%282006-2020%29.svg/512px-Intel_logo_%282006-2020%29.svg.png' },
+                { name: 'Oracle', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Oracle_logo.svg/512px-Oracle_logo.svg.png' },
+                { name: 'Salesforce', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Salesforce.com_logo.svg/512px-Salesforce.com_logo.svg.png' },
+              ].map((company, i) => (
                 <div
                   key={i}
-                  className="flex-shrink-0 w-40 h-20 sm:w-48 sm:h-24 bg-gray-100 rounded-xl flex items-center justify-center hover:shadow-lg hover:scale-110 transition-all duration-300 cursor-pointer group"
+                  className="flex-shrink-0 w-40 h-20 sm:w-48 sm:h-24 bg-white border-2 border-gray-100 rounded-xl flex items-center justify-center hover:shadow-lg hover:scale-110 transition-all duration-500 cursor-pointer group transform hover:-translate-y-1 p-4 hover:border-cyan-200"
                 >
-                  <Building className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 group-hover:text-cyan-600 transition-colors" />
+                  <img 
+                    src={company.logo} 
+                    alt={company.name}
+                    className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300 opacity-70 group-hover:opacity-100"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="hidden items-center justify-center w-full h-full">
+                    <Building className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 group-hover:text-cyan-600 transition-all duration-300 group-hover:scale-110" />
+                  </div>
                 </div>
               ))}
             </div>
@@ -481,10 +512,10 @@ const LandingPage = ({ onShowLogin }) => {
                   <div className="hidden lg:block absolute top-16 left-1/2 w-full h-0.5 bg-gradient-to-r from-cyan-300 to-blue-300 z-0"></div>
                 )}
                 
-                <div className="relative z-10 bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group">
-                  <div className="text-5xl sm:text-6xl font-bold text-gray-100 mb-4">{item.step}</div>
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 animate-float">
-                    <item.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+                <div className="relative z-10 bg-white rounded-2xl p-6 sm:p-8 shadow-lg card-hover group">
+                  <div className="text-5xl sm:text-6xl font-bold text-gray-100 mb-4 transition-colors duration-300 group-hover:text-gray-200">{item.step}</div>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-6 icon-hover animate-float">
+                    <item.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white transition-all duration-300" />
                   </div>
                   <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
                   <p className="text-sm sm:text-base text-gray-600">{item.desc}</p>
@@ -530,10 +561,10 @@ const LandingPage = ({ onShowLogin }) => {
           </p>
           <button
             onClick={onShowLogin}
-            className="group bg-white text-cyan-600 px-8 sm:px-12 py-4 sm:py-5 rounded-lg text-lg sm:text-xl font-bold hover:shadow-2xl hover:scale-110 transition-all duration-300 inline-flex items-center"
+            className="group bg-white text-cyan-600 px-8 sm:px-12 py-4 sm:py-5 rounded-lg text-lg sm:text-xl font-bold hover:shadow-2xl hover:scale-110 transition-all duration-500 inline-flex items-center transform hover:-translate-y-2"
           >
             Get Started Now
-            <Rocket className="ml-3 w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-2 transition-transform" />
+            <Rocket className="ml-3 w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-2 group-hover:rotate-12 transition-all duration-300" />
           </button>
         </div>
       </section>
@@ -560,10 +591,10 @@ const LandingPage = ({ onShowLogin }) => {
                   <a
                     key={social}
                     href="#"
-                    className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-cyan-600 transition-all duration-300 hover:scale-110"
+                    className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-cyan-600 transition-all duration-500 hover:scale-110 transform hover:-translate-y-1 hover:rotate-6"
                   >
                     <span className="sr-only">{social}</span>
-                    <div className="w-5 h-5 bg-gray-400 rounded"></div>
+                    <div className="w-5 h-5 bg-gray-400 rounded transition-colors duration-300"></div>
                   </a>
                 ))}
               </div>
@@ -609,6 +640,7 @@ const LandingPage = ({ onShowLogin }) => {
 
       {/* Custom Animations CSS */}
       <style>{`
+        /* Keyframe Animations */
         @keyframes fadeInUp {
           from {
             opacity: 0;
@@ -617,6 +649,37 @@ const LandingPage = ({ onShowLogin }) => {
           to {
             opacity: 1;
             transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-40px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(40px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
           }
         }
 
@@ -638,8 +701,41 @@ const LandingPage = ({ onShowLogin }) => {
           }
         }
 
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.7;
+          }
+        }
+
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        /* Animation Classes */
         .animate-fadeInUp {
           animation: fadeInUp 1s ease-out;
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 0.8s ease-out;
+        }
+
+        .animate-slideInLeft {
+          animation: slideInLeft 0.8s ease-out;
+        }
+
+        .animate-slideInRight {
+          animation: slideInRight 0.8s ease-out;
         }
 
         .animate-float {
@@ -648,6 +744,126 @@ const LandingPage = ({ onShowLogin }) => {
 
         .animate-scroll {
           animation: scroll 30s linear infinite;
+        }
+
+        .animate-pulse {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .animate-scaleIn {
+          animation: scaleIn 0.5s ease-out;
+        }
+
+        /* Enhanced Transitions */
+        * {
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Button Hover Effects */
+        button, a {
+          position: relative;
+          overflow: hidden;
+        }
+
+        button::before, a.btn-effect::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.2);
+          transform: translate(-50%, -50%);
+          transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before, a.btn-effect:hover::before {
+          width: 300px;
+          height: 300px;
+        }
+
+        /* Card Hover Effects */
+        .card-hover {
+          position: relative;
+          transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .card-hover::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: inherit;
+          opacity: 0;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+          transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+          pointer-events: none;
+        }
+
+        .card-hover:hover::after {
+          opacity: 1;
+        }
+
+        .card-hover:hover {
+          transform: translateY(-8px);
+        }
+
+        /* Icon Animations */
+        .icon-hover {
+          transition: all 0.3s ease;
+        }
+
+        .group:hover .icon-hover {
+          transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Link Underline Animation */
+        .link-underline {
+          position: relative;
+        }
+
+        .link-underline::after {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background: currentColor;
+          transition: width 0.3s ease;
+        }
+
+        .link-underline:hover::after {
+          width: 100%;
+        }
+
+        /* Image Hover Effects */
+        .img-hover {
+          transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+          overflow: hidden;
+        }
+
+        .img-hover img {
+          transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .img-hover:hover img {
+          transform: scale(1.08);
+        }
+
+        /* Gradient Animation */
+        .gradient-animated {
+          background-size: 200% 200%;
+          animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
 
         /* Smooth scrolling */
@@ -667,6 +883,7 @@ const LandingPage = ({ onShowLogin }) => {
         ::-webkit-scrollbar-thumb {
           background: linear-gradient(to bottom, #06b6d4, #2563eb);
           border-radius: 5px;
+          transition: background 0.3s ease;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -677,6 +894,17 @@ const LandingPage = ({ onShowLogin }) => {
         @media (max-width: 640px) {
           html {
             font-size: 14px;
+          }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+          *,
+          *::before,
+          *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
           }
         }
       `}</style>
