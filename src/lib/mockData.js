@@ -61,7 +61,35 @@ const initializeData = () => {
         status: 'scheduled'
       }
     ],
-    messages: [],
+    messages: [
+      {
+        id: 'msg1',
+        conversationId: '2-3',
+        senderId: '3',
+        receiverId: '2',
+        content: 'Hi! We received your application for the Software Engineer position.',
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        read: true
+      },
+      {
+        id: 'msg2',
+        conversationId: '2-3',
+        senderId: '2',
+        receiverId: '3',
+        content: 'Thank you! I am very excited about this opportunity.',
+        timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+        read: true
+      },
+      {
+        id: 'msg3',
+        conversationId: '2-3',
+        senderId: '3',
+        receiverId: '2',
+        content: 'Great! We would like to schedule an interview. Are you available next week?',
+        timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+        read: false
+      }
+    ],
     notifications: [],
     documents: [
       {

@@ -46,6 +46,18 @@ const MessagingView = () => {
     return () => clearInterval(interval);
   }, [conversations]);
 
+  useEffect(() => {
+    // Auto-refresh messages every 3 seconds when a conversation is selected
+    if (!selectedConversation) return;
+    
+    const refreshInterval = setInterval(() => {
+      loadMessages(selectedConversation.userId);
+      loadConversations();
+    }, 3000);
+    
+    return () => clearInterval(refreshInterval);
+  }, [selectedConversation]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -64,18 +76,20 @@ const MessagingView = () => {
     if ((!newMessage.trim() && attachedFiles.length === 0) || !selectedConversation) return;
 
     if (editingMessage) {
-      // Update existing message
+      // Update existing message in state
       setMessages(prev => prev.map(msg => 
         msg.id === editingMessage.id ? { ...msg, content: newMessage.trim(), edited: true } : msg
       ));
       setEditingMessage(null);
     } else {
       // Send new message
-      const messageData = {
-        content: newMessage.trim(),
-        attachments: attachedFiles
-      };
-      sendMessage(user.id, selectedConversation.userId, newMessage.trim());
+      const sentMessage = sendMessage(user.id, selectedConversation.userId, newMessage.trim());
+      
+      // Add message to state immediately for instant UI update
+      setMessages(prev => [...prev, sentMessage]);
+      
+      // Update conversations list
+      loadConversations();
       
       // Simulate typing indicator
       setIsTyping(true);
@@ -85,8 +99,6 @@ const MessagingView = () => {
     setNewMessage('');
     setAttachedFiles([]);
     setShowEmojiPicker(false);
-    loadMessages(selectedConversation.userId);
-    loadConversations();
   };
 
   const handleFileAttach = (e) => {
