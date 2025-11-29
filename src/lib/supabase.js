@@ -1,41 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
+import { SHARED_DEFAULT_DATA } from './sharedData';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-anon-key';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Default mock user data for demo purposes
-const defaultMockUsers = [
-  {
-    id: '1',
-    email: 'admin@placementhub.edu',
-    password: 'admin123',
-    full_name: 'System Administrator',
-    role: 'admin'
-  },
-  {
-    id: '2',
-    email: 'student@placementhub.edu',
-    password: 'student123',
-    full_name: 'John Student',
-    role: 'student'
-  },
-  {
-    id: '3',
-    email: 'employer@company.com',
-    password: 'employer123',
-    full_name: 'Jane Employer',
-    role: 'employer'
-  },
-  {
-    id: '4',
-    email: 'officer@placementhub.edu',
-    password: 'officer123',
-    full_name: 'Mike Officer',
-    role: 'placement_officer'
-  }
-];
+// Use shared default users to ensure consistency across all deployments
+const defaultMockUsers = SHARED_DEFAULT_DATA.users;
 
 // Load users from localStorage or use defaults
 const loadMockUsers = () => {

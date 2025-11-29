@@ -1,135 +1,19 @@
 // Mock data management for PlacementHub
 // This provides a simple in-memory database using localStorage
 
+import { SHARED_DEFAULT_DATA } from './sharedData';
+
 // Initialize data structure
 const initializeData = () => {
   const defaultData = {
-    jobs: [
-      {
-        id: '1',
-        title: 'Software Engineer',
-        company: 'Tech Corp',
-        employerId: '3',
-        location: 'Bangalore',
-        salary: '12-15 LPA',
-        type: 'Full-time',
-        skills: ['JavaScript', 'React', 'Node.js'],
-        description: 'Looking for talented software engineers',
-        postedDate: new Date().toISOString(),
-        status: 'active'
-      },
-      {
-        id: '2',
-        title: 'Data Analyst',
-        company: 'Analytics Inc',
-        employerId: '3',
-        location: 'Mumbai',
-        salary: '8-10 LPA',
-        type: 'Full-time',
-        skills: ['Python', 'SQL', 'Excel'],
-        description: 'Data analysis position',
-        postedDate: new Date().toISOString(),
-        status: 'active'
-      }
-    ],
-    applications: [
-      {
-        id: '1',
-        jobId: '1',
-        studentId: '2',
-        status: 'pending',
-        appliedDate: new Date().toISOString()
-      }
-    ],
-    placements: [
-      {
-        id: '1',
-        studentId: '2',
-        jobId: '1',
-        company: 'Tech Corp',
-        package: '12 LPA',
-        placedDate: new Date().toISOString()
-      }
-    ],
-    interviews: [
-      {
-        id: '1',
-        applicationId: '1',
-        studentId: '2',
-        employerId: '3',
-        date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        status: 'scheduled'
-      }
-    ],
-    messages: [
-      {
-        id: 'msg1',
-        conversationId: '2-3',
-        senderId: '3',
-        receiverId: '2',
-        content: 'Hi! We received your application for the Software Engineer position.',
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        read: true
-      },
-      {
-        id: 'msg2',
-        conversationId: '2-3',
-        senderId: '2',
-        receiverId: '3',
-        content: 'Thank you! I am very excited about this opportunity.',
-        timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-        read: true
-      },
-      {
-        id: 'msg3',
-        conversationId: '2-3',
-        senderId: '3',
-        receiverId: '2',
-        content: 'Great! We would like to schedule an interview. Are you available next week?',
-        timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-        read: false
-      }
-    ],
-    notifications: [],
-    documents: [
-      {
-        id: 'doc1',
-        userId: '2',
-        name: 'John_Doe_Resume.pdf',
-        type: 'resume',
-        size: '245KB',
-        uploadDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        tags: ['react', 'javascript', 'node', 'mongodb'],
-        isPublic: false,
-        isFavorite: true,
-        downloadCount: 5
-      },
-      {
-        id: 'doc2',
-        userId: '2',
-        name: 'Cover_Letter_TechCorp.pdf',
-        type: 'cover-letter',
-        size: '89KB',
-        uploadDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        tags: ['software engineer', 'tech corp'],
-        isPublic: false,
-        isFavorite: false,
-        downloadCount: 2
-      },
-      {
-        id: 'doc3',
-        userId: '2',
-        name: 'ReactJS_Certificate.pdf',
-        type: 'certificate',
-        size: '156KB',
-        uploadDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-        tags: ['react', 'certification', 'frontend'],
-        isPublic: true,
-        isFavorite: true,
-        downloadCount: 12
-      }
-    ],
-    profiles: {}
+    jobs: SHARED_DEFAULT_DATA.jobs,
+    applications: SHARED_DEFAULT_DATA.applications,
+    placements: SHARED_DEFAULT_DATA.placements,
+    interviews: SHARED_DEFAULT_DATA.interviews,
+    messages: SHARED_DEFAULT_DATA.messages,
+    notifications: SHARED_DEFAULT_DATA.notifications,
+    documents: SHARED_DEFAULT_DATA.documents,
+    profiles: SHARED_DEFAULT_DATA.profiles
   };
 
   try {
