@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { User, Mail, Phone, MapPin, Calendar, Upload, Save, CreditCard as Edit3, GraduationCap, Award, FileText } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Calendar, Upload, Save, CreditCard as Edit3, GraduationCap, Award, FileText, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { getProfile, updateProfile } from '../../lib/mockData';
 
 const ProfileView = ({ onNavigate }) => {
   const { user, userProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [profileData, setProfileData] = useState({
     fullName: '',
     email: '',
@@ -78,11 +81,69 @@ const ProfileView = ({ onNavigate }) => {
     }));
   };
 
-  const handleSave = () => {
-    if (user) {
+  const validateProfile = (data) => {
+    const errors = [];
+    
+    if (!data.fullName || data.fullName.trim().length < 3) {
+      errors.push('Full name must be at least 3 characters');
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!data.email || !emailRegex.test(data.email)) {
+      errors.push('Please enter a valid email address');
+    }
+    
+    const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
+    if (!data.phone || !phoneRegex.test(data.phone.replace(/\s/g, ''))) {
+      errors.push('Please enter a valid phone number');
+    }
+    
+    if (data.cgpa < 0 || data.cgpa > 4) {
+      errors.push('CGPA must be between 0 and 4.0');
+    }
+    
+    if (data.graduationYear < 2000 || data.graduationYear > 2050) {
+      errors.push('Graduation year must be between 2000 and 2050');
+    }
+    
+    if (!data.bio || data.bio.trim().length < 20) {
+      errors.push('Bio must be at least 20 characters');
+    }
+    
+    if (data.skills.length === 0) {
+      errors.push('Please add at least one skill');
+    }
+    
+    return errors;
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    
+    const validationErrors = validateProfile(profileData);
+    if (validationErrors.length > 0) {
+      setError(validationErrors[0]);
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
       updateProfile(user.id, profileData);
-      console.log('Profile saved:', profileData);
+      setSuccess('Profile updated successfully!');
       setIsEditing(false);
+      
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to update profile. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,6 +164,20 @@ const ProfileView = ({ onNavigate }) => {
             {isEditing ? 'Cancel' : 'Edit Profile'}
           </button>
         </div>
+
+        {/* Success/Error Messages */}
+        {success && (
+          <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center animate-fadeIn">
+            <CheckCircle className="h-5 w-5 mr-2" />
+            {success}
+          </div>
+        )}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center animate-shake">
+            <AlertCircle className="h-5 w-5 mr-2" />
+            {error}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Card */}
@@ -301,10 +376,11 @@ const ProfileView = ({ onNavigate }) => {
                 </button>
                 <button
                   onClick={handleSave}
-                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center"
+                  disabled={loading}
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save className="h-4 w-4 mr-2" />
-                  Save Changes
+                  {loading ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
             )}

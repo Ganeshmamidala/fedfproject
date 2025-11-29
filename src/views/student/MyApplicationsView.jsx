@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Calendar, Clock, CheckCircle, XCircle, AlertCircle, Eye, MessageSquare } from 'lucide-react';
+import { Search, Calendar, Clock, CheckCircle, XCircle, AlertCircle, Eye, MessageSquare, Trash2 } from 'lucide-react';
 import ApplicationCard from '../../components/Applications/ApplicationCard';
 import ApplicationDetailsModal from '../../components/Applications/ApplicationDetailsModal';
 
@@ -9,9 +9,14 @@ const MyApplicationsView = () => {
   const [selectedTimeframe, setSelectedTimeframe] = useState('all');
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  // Mock data - in real app, this would come from API
-  const mockApplications = [
+  // Initialize applications with mock data
+  React.useEffect(() => {
+    const initialApplications = [
     {
       id: '1',
       job_id: '1',
@@ -173,6 +178,33 @@ const MyApplicationsView = () => {
       }
     }
   ];
+    setApplications(initialApplications);
+  }, []);
+
+  // Withdraw application
+  const handleWithdrawApplication = async (applicationId) => {
+    if (!window.confirm('Are you sure you want to withdraw this application? This action cannot be undone.')) {
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setApplications(prev => prev.filter(app => app.id !== applicationId));
+      setSuccess('Application withdrawn successfully!');
+      
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to withdraw application. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const statusOptions = [
     { value: '', label: 'All Statuses' },
@@ -185,7 +217,7 @@ const MyApplicationsView = () => {
     { value: 'withdrawn', label: 'Withdrawn' },
   ];
 
-  const filteredApplications = mockApplications.filter(application => {
+  const filteredApplications = applications.filter(application => {
     const matchesSearch = application.job?.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          application.employer?.company_name?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = !selectedStatus || application.status === selectedStatus;
@@ -215,13 +247,13 @@ const MyApplicationsView = () => {
   });
 
   const getStatusStats = () => {
-    const stats = mockApplications.reduce((acc, app) => {
+    const stats = applications.reduce((acc, app) => {
       acc[app.status] = (acc[app.status] || 0) + 1;
       return acc;
     }, {});
 
     return {
-      total: mockApplications.length,
+      total: applications.length,
       pending: (stats.applied || 0) + (stats.under_review || 0),
       interviews: (stats.interview_scheduled || 0) + (stats.interviewed || 0),
       offers: (stats.offer_extended || 0) + (stats.offer_accepted || 0),
@@ -251,16 +283,10 @@ const MyApplicationsView = () => {
   };
 
   const handleViewApplication = (applicationId) => {
-    const app = mockApplications.find(a => a.id === applicationId);
+    const app = applications.find(a => a.id === applicationId);
     if (app) {
       setSelectedApplication(app);
       setShowDetailsModal(true);
-    }
-  };
-
-  const handleWithdrawApplication = (applicationId) => {
-    if (confirm('Are you sure you want to withdraw this application?')) {
-      console.log(`Withdraw application ${applicationId}`);
     }
   };
 
@@ -349,9 +375,23 @@ const MyApplicationsView = () => {
       {/* Results Summary */}
       <div className="mb-6">
         <p className="text-sm text-gray-600">
-          Showing {filteredApplications.length} of {mockApplications.length} applications
+          Showing {filteredApplications.length} of {applications.length} applications
         </p>
       </div>
+
+      {/* Success/Error Messages */}
+      {success && (
+        <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center animate-fadeIn">
+          <CheckCircle className="h-5 w-5 mr-2" />
+          {success}
+        </div>
+      )}
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center animate-shake">
+          <XCircle className="h-5 w-5 mr-2" />
+          {error}
+        </div>
+      )}
 
       {/* Application List */}
       {filteredApplications.length === 0 ? (
@@ -422,8 +462,10 @@ const MyApplicationsView = () => {
                   {(application.status === 'applied' || application.status === 'under_review') && (
                     <button
                       onClick={() => handleWithdrawApplication(application.id)}
-                      className="px-3 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                      disabled={loading}
+                      className="px-3 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md transition-colors flex items-center disabled:opacity-50"
                     >
+                      <Trash2 className="h-3 w-3 mr-1" />
                       Withdraw
                     </button>
                   )}

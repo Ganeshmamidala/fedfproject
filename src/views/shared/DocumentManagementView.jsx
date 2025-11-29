@@ -36,6 +36,27 @@ const DocumentManagementView = () => {
     setDocuments(docs);
   };
 
+  const validateFiles = (files) => {
+    const errors = [];
+    const maxSizeMB = 20;
+    const allowedTypes = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'];
+
+    files.forEach(file => {
+      const sizeMB = file.size / (1024 * 1024);
+      const extension = file.name.split('.').pop().toLowerCase();
+
+      if (sizeMB > maxSizeMB) {
+        errors.push(`${file.name} exceeds ${maxSizeMB}MB limit`);
+      }
+
+      if (!allowedTypes.includes(extension)) {
+        errors.push(`${file.name} has unsupported file type`);
+      }
+    });
+
+    return errors;
+  };
+
   const analyzeResume = (file, documentTags = '') => {
     try {
       // Extract skills from resume filename and tags
@@ -107,52 +128,86 @@ const DocumentManagementView = () => {
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!selectedFiles || selectedFiles.length === 0) {
       error('Please select at least one file');
       return;
     }
 
-    selectedFiles.forEach(file => {
-      const newDoc = addDocument({
-        userId: user.id,
-        name: file.name,
-        type: uploadData.type,
-        size: (file.size / 1024).toFixed(2) + 'KB',
-        tags: uploadData.tags.split(',').map(t => t.trim()).filter(t => t),
-        isPublic: uploadData.isPublic
+    const validationErrors = validateFiles(selectedFiles);
+    if (validationErrors.length > 0) {
+      error(validationErrors[0]);
+      return;
+    }
+
+    if (!uploadData.type) {
+      error('Please select a document type');
+      return;
+    }
+
+    try {
+      // Simulate async upload
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      selectedFiles.forEach(file => {
+        const newDoc = addDocument({
+          userId: user.id,
+          name: file.name,
+          type: uploadData.type,
+          size: (file.size / 1024).toFixed(2) + 'KB',
+          tags: uploadData.tags.split(',').map(t => t.trim()).filter(t => t),
+          isPublic: uploadData.isPublic
+        });
+
+        setDocuments(prev => [newDoc, ...prev]);
+        
+        // Analyze resume if it's a resume type
+        if (uploadData.type === 'resume') {
+          const analysis = analyzeResume(file);
+          setAnalysisData(analysis);
+          setShowAnalysis(true);
+        }
       });
 
-      setDocuments(prev => [newDoc, ...prev]);
-      
-      // Analyze resume if it's a resume type
-      if (uploadData.type === 'resume') {
-        const analysis = analyzeResume(file);
-        setAnalysisData(analysis);
-        setShowAnalysis(true);
-      }
-    });
-
-    success(`${selectedFiles.length} file(s) uploaded successfully!`);
-    setShowUploadModal(false);
-    setUploadData({ type: 'resume', tags: '', isPublic: false });
-    setSelectedFiles([]);
-  };
-
-  const handleDelete = (docId) => {
-    if (confirm('Are you sure you want to delete this document?')) {
-      deleteDoc(docId);
-      setDocuments(prev => prev.filter(d => d.id !== docId));
-      success('Document deleted successfully');
+      success(`${selectedFiles.length} file(s) uploaded successfully!`);
+      setShowUploadModal(false);
+      setUploadData({ type: 'resume', tags: '', isPublic: false });
+      setSelectedFiles([]);
+    } catch (err) {
+      error('Failed to upload documents. Please try again.');
     }
   };
 
-  const handleToggleFavorite = (docId) => {
-    toggleFav(docId);
-    setDocuments(prev => prev.map(d =>
-      d.id === docId ? { ...d, isFavorite: !d.isFavorite } : d
-    ));
-    success('Favorite status updated');
+  const handleDelete = async (docId) => {
+    if (!confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      // Simulate async operation
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      deleteDoc(docId);
+      setDocuments(prev => prev.filter(d => d.id !== docId));
+      success('Document deleted successfully');
+    } catch (err) {
+      error('Failed to delete document. Please try again.');
+    }
+  };
+
+  const handleToggleFavorite = async (docId) => {
+    try {
+      // Simulate async operation
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      toggleFav(docId);
+      setDocuments(prev => prev.map(d =>
+        d.id === docId ? { ...d, isFavorite: !d.isFavorite } : d
+      ));
+      success('Favorite status updated');
+    } catch (err) {
+      error('Failed to update favorite status');
+    }
   };
 
   const getTypeIcon = (type) => {

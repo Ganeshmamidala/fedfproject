@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { Search, Plus, CreditCard, Eye, Trash2, Users } from 'lucide-react';
+import { Search, Plus, Eye, Trash2, Users, Edit, X, Save, AlertCircle } from 'lucide-react';
 
 const MyJobsView = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [jobs, setJobs] = useState([]);
+  const [editingJob, setEditingJob] = useState(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  // Mock data - in real app, this would come from API
-  const mockJobs = [
+  // Initialize jobs with mock data - simulating API data
+  React.useEffect(() => {
+    const initialJobs = [
     {
       id: '1',
       employer_id: '1',
@@ -50,8 +57,154 @@ const MyJobsView = () => {
       applications_count: 67
     }
   ];
+    setJobs(initialJobs);
+  }, []);
 
-  const filteredJobs = mockJobs.filter(job => {
+  // Validation function
+  const validateJob = (job) => {
+    if (!job.title || job.title.trim().length < 3) {
+      return 'Job title must be at least 3 characters';
+    }
+    if (!job.description || job.description.trim().length < 20) {
+      return 'Job description must be at least 20 characters';
+    }
+    if (!job.location || job.location.trim().length < 2) {
+      return 'Location is required';
+    }
+    if (!job.salary_range) {
+      return 'Salary range is required';
+    }
+    if (!job.application_deadline) {
+      return 'Application deadline is required';
+    }
+    const deadline = new Date(job.application_deadline);
+    if (deadline <= new Date()) {
+      return 'Application deadline must be in the future';
+    }
+    if (!job.requirements || job.requirements.length === 0) {
+      return 'At least one requirement is needed';
+    }
+    return null;
+  };
+
+  // Create new job
+  const handleCreateJob = async (jobData) => {
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    const validationError = validateJob(jobData);
+    if (validationError) {
+      setError(validationError);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const newJob = {
+        ...jobData,
+        id: String(Date.now()),
+        employer_id: '1',
+        created_at: new Date().toISOString(),
+        applications_count: 0,
+        is_active: true
+      };
+
+      setJobs(prev => [newJob, ...prev]);
+      setSuccess('Job posted successfully!');
+      setIsCreating(false);
+      
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to create job. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update existing job
+  const handleUpdateJob = async (jobId, jobData) => {
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    const validationError = validateJob(jobData);
+    if (validationError) {
+      setError(validationError);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setJobs(prev => prev.map(job => 
+        job.id === jobId ? { ...job, ...jobData } : job
+      ));
+      
+      setSuccess('Job updated successfully!');
+      setEditingJob(null);
+      
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to update job. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete job
+  const handleDeleteJob = async (jobId) => {
+    if (!window.confirm('Are you sure you want to delete this job posting? This action cannot be undone.')) {
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setJobs(prev => prev.filter(job => job.id !== jobId));
+      setSuccess('Job deleted successfully!');
+      
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Failed to delete job. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Toggle job status
+  const handleToggleStatus = async (jobId) => {
+    setLoading(true);
+    setError('');
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      setJobs(prev => prev.map(job => 
+        job.id === jobId ? { ...job, is_active: !job.is_active } : job
+      ));
+      
+      setSuccess('Job status updated!');
+      setTimeout(() => setSuccess(''), 2000);
+    } catch (err) {
+      setError('Failed to update status.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredJobs = jobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          job.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = selectedStatus === 'all' || 
@@ -63,31 +216,45 @@ const MyJobsView = () => {
 
   const getJobStats = () => {
     return {
-      total: mockJobs.length,
-      active: mockJobs.filter(job => job.is_active).length,
-      inactive: mockJobs.filter(job => !job.is_active).length,
-      totalApplications: mockJobs.reduce((sum, job) => sum + (job.applications_count || 0), 0)
+      total: jobs.length,
+      active: jobs.filter(job => job.is_active).length,
+      inactive: jobs.filter(job => !job.is_active).length,
+      totalApplications: jobs.reduce((sum, job) => sum + (job.applications_count || 0), 0)
     };
   };
 
   const stats = getJobStats();
 
-  const handleEdit = (jobId) => {
-    alert(`Edit job ${jobId} functionality would be implemented here`);
+  const handleStartEdit = (job) => {
+    setEditingJob({ ...job });
+    setIsCreating(false);
   };
 
-  const handleView = (jobId) => {
-    alert(`View job ${jobId} details functionality would be implemented here`);
+  const handleCancelEdit = () => {
+    setEditingJob(null);
+    setIsCreating(false);
+    setError('');
   };
 
-  const handleDelete = (jobId) => {
-    if (confirm('Are you sure you want to delete this job posting?')) {
-      alert(`Delete job ${jobId} functionality would be implemented here`);
+  const handleStartCreate = () => {
+    setEditingJob({
+      title: '',
+      description: '',
+      location: '',
+      job_type: 'full_time',
+      salary_range: '',
+      application_deadline: '',
+      requirements: []
+    });
+    setIsCreating(true);
+  };
+
+  const handleSaveJob = () => {
+    if (isCreating) {
+      handleCreateJob(editingJob);
+    } else {
+      handleUpdateJob(editingJob.id, editingJob);
     }
-  };
-
-  const handleToggleStatus = (jobId) => {
-    alert(`Toggle status for job ${jobId} functionality would be implemented here`);
   };
 
   return (
@@ -99,11 +266,144 @@ const MyJobsView = () => {
             Manage your job postings and track applications.
           </p>
         </div>
-        <button className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center">
+        <button 
+          onClick={handleStartCreate}
+          disabled={loading}
+          className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           <Plus className="h-4 w-4 mr-2" />
           Post New Job
         </button>
       </div>
+
+      {/* Success/Error Messages */}
+      {success && (
+        <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center animate-fadeIn">
+          <AlertCircle className="h-5 w-5 mr-2" />
+          {success}
+        </div>
+      )}
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center animate-shake">
+          <AlertCircle className="h-5 w-5 mr-2" />
+          {error}
+        </div>
+      )}
+
+      {/* Job Edit/Create Modal */}
+      {(editingJob || isCreating) && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-900">
+                {isCreating ? 'Post New Job' : 'Edit Job'}
+              </h2>
+              <button onClick={handleCancelEdit} className="p-2 hover:bg-gray-100 rounded-lg">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
+                <input
+                  type="text"
+                  value={editingJob?.title || ''}
+                  onChange={(e) => setEditingJob({...editingJob, title: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="e.g., Senior Software Engineer"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                <textarea
+                  value={editingJob?.description || ''}
+                  onChange={(e) => setEditingJob({...editingJob, description: e.target.value})}
+                  rows={4}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Describe the role and responsibilities..."
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Location *</label>
+                  <input
+                    type="text"
+                    value={editingJob?.location || ''}
+                    onChange={(e) => setEditingJob({...editingJob, location: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="e.g., San Francisco, CA"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Job Type *</label>
+                  <select
+                    value={editingJob?.job_type || 'full_time'}
+                    onChange={(e) => setEditingJob({...editingJob, job_type: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="full_time">Full Time</option>
+                    <option value="part_time">Part Time</option>
+                    <option value="internship">Internship</option>
+                    <option value="contract">Contract</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Salary Range *</label>
+                  <input
+                    type="text"
+                    value={editingJob?.salary_range || ''}
+                    onChange={(e) => setEditingJob({...editingJob, salary_range: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="e.g., $80,000 - $120,000"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Application Deadline *</label>
+                  <input
+                    type="date"
+                    value={editingJob?.application_deadline || ''}
+                    onChange={(e) => setEditingJob({...editingJob, application_deadline: e.target.value})}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Requirements (comma-separated) *</label>
+                <input
+                  type="text"
+                  value={editingJob?.requirements?.join(', ') || ''}
+                  onChange={(e) => setEditingJob({...editingJob, requirements: e.target.value.split(',').map(r => r.trim()).filter(r => r)})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="e.g., JavaScript, React, 5+ years experience"
+                />
+              </div>
+            </div>
+            <div className="sticky bottom-0 bg-gray-50 px-6 py-4 flex justify-end space-x-3 border-t">
+              <button
+                onClick={handleCancelEdit}
+                disabled={loading}
+                className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveJob}
+                disabled={loading}
+                className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg hover:from-cyan-700 hover:to-blue-700 flex items-center disabled:opacity-50"
+              >
+                {loading ? (
+                  <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Saving...</>
+                ) : (
+                  <><Save className="h-4 w-4 mr-2" />{isCreating ? 'Post Job' : 'Save Changes'}</>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Job Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
@@ -221,22 +521,17 @@ const MyJobsView = () => {
 
                 <div className="flex items-center space-x-2">
                   <button
-                    onClick={() => handleView(job.id)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                    title="View Details"
-                  >
-                    <Eye className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleEdit(job.id)}
-                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                    onClick={() => handleStartEdit(job)}
+                    disabled={loading}
+                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors disabled:opacity-50"
                     title="Edit Job"
                   >
                     <Edit className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => handleToggleStatus(job.id)}
-                    className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                    disabled={loading}
+                    className={`px-3 py-1 text-xs rounded-md transition-colors disabled:opacity-50 ${
                       job.is_active
                         ? 'text-red-600 hover:bg-red-50'
                         : 'text-green-600 hover:bg-green-50'
@@ -245,8 +540,9 @@ const MyJobsView = () => {
                     {job.is_active ? 'Deactivate' : 'Activate'}
                   </button>
                   <button
-                    onClick={() => handleDelete(job.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    onClick={() => handleDeleteJob(job.id)}
+                    disabled={loading}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                     title="Delete Job"
                   >
                     <Trash2 className="h-4 w-4" />
