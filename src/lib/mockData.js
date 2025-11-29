@@ -63,7 +63,44 @@ const initializeData = () => {
     ],
     messages: [],
     notifications: [],
-    documents: [],
+    documents: [
+      {
+        id: 'doc1',
+        userId: '2',
+        name: 'John_Doe_Resume.pdf',
+        type: 'resume',
+        size: '245KB',
+        uploadDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        tags: ['react', 'javascript', 'node', 'mongodb'],
+        isPublic: false,
+        isFavorite: true,
+        downloadCount: 5
+      },
+      {
+        id: 'doc2',
+        userId: '2',
+        name: 'Cover_Letter_TechCorp.pdf',
+        type: 'cover-letter',
+        size: '89KB',
+        uploadDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        tags: ['software engineer', 'tech corp'],
+        isPublic: false,
+        isFavorite: false,
+        downloadCount: 2
+      },
+      {
+        id: 'doc3',
+        userId: '2',
+        name: 'ReactJS_Certificate.pdf',
+        type: 'certificate',
+        size: '156KB',
+        uploadDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        tags: ['react', 'certification', 'frontend'],
+        isPublic: true,
+        isFavorite: true,
+        downloadCount: 12
+      }
+    ],
     profiles: {}
   };
 
