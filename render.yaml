@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: placementhub-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://placementadmin:PlacementHub2024Secure@cluster0.mongodb.net/placementhub?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        value: 8kL9mN2pQ5rT7vX1zA3bC6dE9fH2jK5mN8pQ1rS4tU7vW0xY3z
+      - key: PORT
+        value: 5000
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        value: https://ganeshmamidala.github.io/fedfproject

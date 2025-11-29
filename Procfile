@@ -1,2 +1,1 @@
-# Render.com Deployment (Backend API)
-web: npm run server
+web: npm start
