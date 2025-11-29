@@ -286,7 +286,7 @@ const LandingPage = ({ onShowLogin }) => {
                   <div className="img-hover rounded-2xl overflow-hidden shadow-xl">
                     <img 
                       src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop" 
-                      alt="Students collaborating" 
+                      alt="Team discussion" 
                       className="w-full"
                     />
                   </div>
