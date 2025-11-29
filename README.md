@@ -1,5 +1,7 @@
 # 🎓 PlacementHub - Campus Placement Management System
 
+**👨‍💻 Author:** Ganesh Mamidala
+
 A modern, full-featured web application for managing campus placements, connecting students with employers, and streamlining the recruitment process with professional UI/UX and comprehensive features.
 
 ## 🌐 Live Demo
