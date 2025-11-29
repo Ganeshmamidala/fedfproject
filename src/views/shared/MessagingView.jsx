@@ -59,10 +59,10 @@ const MessagingView = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-cyan-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
             Messages
           </h1>
           <p className="text-gray-600 mt-2">Communicate with employers and students</p>
@@ -107,7 +107,7 @@ const MessagingView = () => {
                     >
                       <div className="flex items-center space-x-3">
                         <div className="relative">
-                          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                          <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
                             {conversation.user?.full_name?.[0] || '?'}
                           </div>
                           {conversation.unreadCount > 0 && (
@@ -141,10 +141,10 @@ const MessagingView = () => {
             {selectedConversation ? (
               <>
                 {/* Chat Header */}
-                <div className="p-6 border-b border-gray-200/50 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
+                <div className="p-6 border-b border-gray-200/50 bg-gradient-to-r from-cyan-500/10 to-blue-500/10">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                      <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
                         {selectedConversation.user?.full_name?.[0] || '?'}
                       </div>
                       <div>
@@ -187,7 +187,7 @@ const MessagingView = () => {
                         <div
                           className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
                             message.senderId === user.id
-                              ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                              ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
                               : 'bg-gray-100 text-gray-900'
                           }`}
                         >
@@ -221,7 +221,7 @@ const MessagingView = () => {
                     </div>
                     <button
                       onClick={handleSendMessage}
-                      className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                      className="p-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl"
                     >
                       <Send className="w-5 h-5" />
                     </button>

@@ -96,7 +96,7 @@ const PerformanceCharts = () => {
       {chartData.monthlyTrend && (
         <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <TrendingUp className="h-5 w-5 mr-2 text-purple-600" />
+            <TrendingUp className="h-5 w-5 mr-2 text-cyan-600" />
             Monthly Trend
           </h3>
           <div className="h-48 flex items-end justify-between space-x-2">
@@ -156,7 +156,7 @@ const PerformanceCharts = () => {
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
                   {chartData.successRate.percentage}%
                 </span>
                 <span className="text-sm text-gray-600 mt-1">{chartData.successRate.label}</span>
@@ -204,7 +204,7 @@ const calculateAdminCharts = (data, users) => {
     userDistribution: [
       { label: 'Students', value: students, percentage: (students / totalUsers) * 100, color: 'bg-blue-500' },
       { label: 'Employers', value: employers, percentage: (employers / totalUsers) * 100, color: 'bg-green-500' },
-      { label: 'Officers', value: officers, percentage: (officers / totalUsers) * 100, color: 'bg-purple-500' },
+      { label: 'Officers', value: officers, percentage: (officers / totalUsers) * 100, color: 'bg-cyan-500' },
       { label: 'Admins', value: admins, percentage: (admins / totalUsers) * 100, color: 'bg-orange-500' }
     ],
     applicationStatus: [
@@ -213,10 +213,10 @@ const calculateAdminCharts = (data, users) => {
       { label: 'Rejected', value: rejectedApps, percentage: totalApplications > 0 ? (rejectedApps / totalApplications) * 100 : 0, color: 'bg-red-500' }
     ],
     monthlyTrend: [
-      { month: 'Jan', value: Math.floor(totalApplications * 0.15), percentage: 60, color: 'bg-gradient-to-t from-blue-500 to-purple-500' },
-      { month: 'Feb', value: Math.floor(totalApplications * 0.18), percentage: 72, color: 'bg-gradient-to-t from-blue-500 to-purple-500' },
-      { month: 'Mar', value: Math.floor(totalApplications * 0.22), percentage: 88, color: 'bg-gradient-to-t from-blue-500 to-purple-500' },
-      { month: 'Apr', value: totalApplications, percentage: 100, color: 'bg-gradient-to-t from-blue-500 to-purple-500' }
+      { month: 'Jan', value: Math.floor(totalApplications * 0.15), percentage: 60, color: 'bg-gradient-to-t from-cyan-500 to-blue-500' },
+      { month: 'Feb', value: Math.floor(totalApplications * 0.18), percentage: 72, color: 'bg-gradient-to-t from-cyan-500 to-blue-500' },
+      { month: 'Mar', value: Math.floor(totalApplications * 0.22), percentage: 88, color: 'bg-gradient-to-t from-cyan-500 to-blue-500' },
+      { month: 'Apr', value: totalApplications, percentage: 100, color: 'bg-gradient-to-t from-cyan-500 to-blue-500' }
     ],
     successRate: {
       percentage: totalApplications > 0 ? Math.round((acceptedApps / totalApplications) * 100) : 0,
@@ -247,7 +247,7 @@ const calculateStudentCharts = (data, userId) => {
     performanceScore: [
       { label: 'Applied', value: totalApps, description: 'Total Applications', bgColor: 'bg-blue-100', textColor: 'text-blue-600' },
       { label: 'Shortlisted', value: acceptedApps, description: 'Accepted Apps', bgColor: 'bg-green-100', textColor: 'text-green-600' },
-      { label: 'Interviews', value: interviews, description: 'Scheduled', bgColor: 'bg-purple-100', textColor: 'text-purple-600' },
+      { label: 'Interviews', value: interviews, description: 'Scheduled', bgColor: 'bg-cyan-100', textColor: 'text-cyan-600' },
       { label: 'Placed', value: placements, description: 'Successful', bgColor: 'bg-orange-100', textColor: 'text-orange-600' }
     ]
   };
@@ -277,7 +277,7 @@ const calculateEmployerCharts = (data, userId) => {
     performanceScore: [
       { label: 'Jobs Posted', value: myJobs.length, description: 'Total Jobs', bgColor: 'bg-blue-100', textColor: 'text-blue-600' },
       { label: 'Applications', value: totalApps, description: 'Received', bgColor: 'bg-green-100', textColor: 'text-green-600' },
-      { label: 'Shortlisted', value: acceptedApps, description: 'Candidates', bgColor: 'bg-purple-100', textColor: 'text-purple-600' },
+      { label: 'Shortlisted', value: acceptedApps, description: 'Candidates', bgColor: 'bg-cyan-100', textColor: 'text-cyan-600' },
       { label: 'Hired', value: Math.floor(acceptedApps * 0.3), description: 'Successful', bgColor: 'bg-orange-100', textColor: 'text-orange-600' }
     ]
   };
@@ -303,7 +303,7 @@ const calculatePlacementOfficerCharts = (data, users) => {
     performanceScore: [
       { label: 'Students', value: totalStudents, description: 'Total Registered', bgColor: 'bg-blue-100', textColor: 'text-blue-600' },
       { label: 'Placed', value: placedStudents, description: 'Successfully', bgColor: 'bg-green-100', textColor: 'text-green-600' },
-      { label: 'Active Apps', value: pendingApps, description: 'In Progress', bgColor: 'bg-purple-100', textColor: 'text-purple-600' },
+      { label: 'Active Apps', value: pendingApps, description: 'In Progress', bgColor: 'bg-cyan-100', textColor: 'text-cyan-600' },
       { label: 'Companies', value: users.filter(u => u.role === 'employer').length, description: 'Partners', bgColor: 'bg-orange-100', textColor: 'text-orange-600' }
     ]
   };

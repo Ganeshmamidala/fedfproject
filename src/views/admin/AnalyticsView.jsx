@@ -73,7 +73,7 @@ const AnalyticsView = () => {
 
         <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
           <div className="flex items-center">
-            <div className="bg-purple-500 p-3 rounded-xl shadow-lg">
+            <div className="bg-cyan-500 p-3 rounded-xl shadow-lg">
               <FileText className="h-6 w-6 text-white" />
             </div>
             <div className="ml-4">
@@ -185,12 +185,12 @@ const AnalyticsView = () => {
         {/* Top Companies */}
         <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <Building className="h-5 w-5 mr-2 text-purple-600" />
+            <Building className="h-5 w-5 mr-2 text-cyan-600" />
             Top Recruiting Companies
           </h3>
           <div className="space-y-4">
             {topCompanies.map((company, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg">
+              <div key={index} className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-cyan-50 rounded-lg">
                 <div>
                   <p className="font-medium text-gray-900">{company.name}</p>
                   <p className="text-sm text-gray-600">{company.placements} placements</p>
@@ -212,7 +212,7 @@ const AnalyticsView = () => {
           </h3>
           <div className="space-y-4">
             {departmentStats.map((dept, index) => (
-              <div key={index} className="p-3 bg-gradient-to-r from-gray-50 to-purple-50 rounded-lg">
+              <div key={index} className="p-3 bg-gradient-to-r from-gray-50 to-cyan-50 rounded-lg">
                 <div className="flex justify-between items-center mb-2">
                   <p className="font-medium text-gray-900">{dept.department}</p>
                   <span className="text-sm font-medium text-green-600">{dept.rate}%</span>

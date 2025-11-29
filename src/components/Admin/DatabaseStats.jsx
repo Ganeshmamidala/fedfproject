@@ -86,7 +86,7 @@ const DatabaseStats = () => {
           <div className="text-sm opacity-90">New Registrations</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <UserCheck className="w-8 h-8 opacity-80" />
             <div className="text-3xl font-bold">{stats.currentlySignedIn}</div>
@@ -131,11 +131,11 @@ const DatabaseStats = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg">
-            <Briefcase className="w-6 h-6 text-purple-600" />
+          <div className="flex items-center gap-3 p-4 bg-cyan-50 rounded-lg">
+            <Briefcase className="w-6 h-6 text-cyan-600" />
             <div>
-              <div className="text-2xl font-bold text-purple-600">{stats.byRole.placement_officer}</div>
-              <div className="text-sm text-purple-700">Placement Officers</div>
+              <div className="text-2xl font-bold text-cyan-600">{stats.byRole.placement_officer}</div>
+              <div className="text-sm text-cyan-700">Placement Officers</div>
             </div>
           </div>
         </div>
@@ -143,7 +143,7 @@ const DatabaseStats = () => {
 
       {/* Current Session */}
       {stats.currentUser && (
-        <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl shadow-lg p-6 text-white">
           <h3 className="text-lg font-semibold mb-3">🔐 Current Active Session</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -203,7 +203,7 @@ const DatabaseStats = () => {
                           user.role === 'admin' ? 'bg-red-100 text-red-800' :
                           user.role === 'student' ? 'bg-blue-100 text-blue-800' :
                           user.role === 'employer' ? 'bg-green-100 text-green-800' :
-                          'bg-purple-100 text-purple-800'
+                          'bg-cyan-100 text-cyan-800'
                         }`}>
                           {user.role.replace('_', ' ').toUpperCase()}
                         </div>

@@ -180,7 +180,7 @@ const AdvancedAnalytics = ({ userRole }) => {
           <p className="text-sm opacity-90">Placement Rate</p>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-6 text-white shadow-lg">
+        <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg p-6 text-white shadow-lg">
           <div className="flex items-center justify-between mb-4">
             <Users className="h-8 w-8 opacity-80" />
             <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">Apps</span>
@@ -217,7 +217,7 @@ const AdvancedAnalytics = ({ userRole }) => {
                   </div>
                   <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
                     <div 
-                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-full transition-all duration-500"
+                      className="bg-gradient-to-r from-cyan-500 to-blue-500 h-full transition-all duration-500"
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
@@ -237,7 +237,7 @@ const AdvancedAnalytics = ({ userRole }) => {
               
               return (
                 <div key={index} className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
                     {index + 1}
                   </div>
                   <div className="flex-1">

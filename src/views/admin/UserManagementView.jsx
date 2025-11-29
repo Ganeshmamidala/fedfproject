@@ -83,7 +83,7 @@ const UserManagementView = () => {
       admin: 'bg-red-100 text-red-800',
       student: 'bg-blue-100 text-blue-800',
       employer: 'bg-green-100 text-green-800',
-      placement_officer: 'bg-purple-100 text-purple-800'
+      placement_officer: 'bg-cyan-100 text-cyan-800'
     };
     return colors[role];
   };
@@ -125,7 +125,7 @@ const UserManagementView = () => {
             Manage all users and their permissions across the platform.
           </p>
         </div>
-        <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center">
+        <button className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center">
           <UserPlus className="h-4 w-4 mr-2" />
           Add New User
         </button>
@@ -154,7 +154,7 @@ const UserManagementView = () => {
           <div className="text-sm text-gray-600">Employers</div>
         </div>
         <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-4 border border-gray-200/50 card-hover">
-          <div className="text-2xl font-bold text-purple-600">{stats.officers}</div>
+          <div className="text-2xl font-bold text-cyan-600">{stats.officers}</div>
           <div className="text-sm text-gray-600">Officers</div>
         </div>
         <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-4 border border-gray-200/50 card-hover">
@@ -226,7 +226,7 @@ const UserManagementView = () => {
                 <tr key={user.id} className="hover:bg-blue-50/50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="h-10 w-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                      <div className="h-10 w-10 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
                         {user.full_name.split(' ').map(n => n[0]).join('')}
                       </div>
                       <div className="ml-4">

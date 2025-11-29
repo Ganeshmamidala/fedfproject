@@ -242,7 +242,7 @@ const MyApplicationsView = () => {
         return <XCircle className="h-5 w-5 text-red-500" />;
       case 'interview_scheduled':
       case 'interviewed':
-        return <Calendar className="h-5 w-5 text-purple-500" />;
+        return <Calendar className="h-5 w-5 text-cyan-500" />;
       case 'offer_extended':
         return <AlertCircle className="h-5 w-5 text-orange-500" />;
       default:
@@ -284,7 +284,7 @@ const MyApplicationsView = () => {
           <div className="text-sm text-gray-600">Pending Review</div>
         </div>
         <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-4 border border-gray-200/50 card-hover">
-          <div className="text-2xl font-bold text-purple-600">{stats.interviews}</div>
+          <div className="text-2xl font-bold text-cyan-600">{stats.interviews}</div>
           <div className="text-sm text-gray-600">Interviews</div>
         </div>
         <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-4 border border-gray-200/50 card-hover">

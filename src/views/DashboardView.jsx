@@ -102,19 +102,19 @@ const DashboardView = ({ onNavigate }) => {
                 <>
                   <button 
                     onClick={() => onNavigate?.('browse-jobs')}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     Browse New Jobs
                   </button>
                   <button 
                     onClick={() => onNavigate?.('profile')}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     Update Profile
                   </button>
                   <button 
                     onClick={() => onNavigate?.('my-applications')}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     View Applications
                   </button>
@@ -125,19 +125,19 @@ const DashboardView = ({ onNavigate }) => {
                 <>
                   <button 
                     onClick={() => onNavigate?.('post-job')}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     Post New Job
                   </button>
                   <button 
                     onClick={() => onNavigate?.('my-jobs')}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     Review Applications
                   </button>
                   <button 
                     onClick={() => onNavigate?.('company-profile')}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     Company Profile
                   </button>
@@ -148,19 +148,19 @@ const DashboardView = ({ onNavigate }) => {
                 <>
                   <button 
                     onClick={() => onNavigate?.('interview-scheduling')}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     Schedule Interviews
                   </button>
                   <button 
                     onClick={() => onNavigate?.('analytics')}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     Generate Report
                   </button>
                   <button 
                     onClick={() => setShowAnalytics(true)}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     View Analytics
                   </button>
@@ -171,19 +171,19 @@ const DashboardView = ({ onNavigate }) => {
                 <>
                   <button 
                     onClick={() => onNavigate?.('user-management')}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     Manage Users
                   </button>
                   <button 
                     onClick={() => onNavigate?.('analytics')}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     System Settings
                   </button>
                   <button 
                     onClick={() => setShowAnalytics(true)}
-                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
+                    className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-sm"
                   >
                     View Reports
                   </button>
@@ -195,7 +195,7 @@ const DashboardView = ({ onNavigate }) => {
           <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Notifications</h3>
             <div className="space-y-3">
-              <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200/50 rounded-lg shadow-sm">
+              <div className="p-3 bg-gradient-to-r from-cyan-50 to-blue-50 border border-blue-200/50 rounded-lg shadow-sm">
                 <p className="text-sm text-blue-800">
                   Welcome to PlacementHub! Complete your profile to get started.
                 </p>

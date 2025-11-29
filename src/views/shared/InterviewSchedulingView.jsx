@@ -169,7 +169,7 @@ const InterviewSchedulingView = () => {
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               Schedule Interview
             </button>
@@ -180,11 +180,11 @@ const InterviewSchedulingView = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-cyan-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
               Interview Scheduling
             </h1>
             <p className="text-gray-600 mt-2">Manage and schedule interviews with candidates</p>
@@ -214,7 +214,7 @@ const InterviewSchedulingView = () => {
             </div>
             <button
               onClick={() => setShowScheduleModal(true)}
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               <Plus className="w-5 h-5" />
               <span>Schedule Interview</span>
@@ -261,10 +261,10 @@ const InterviewSchedulingView = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">This Week</p>
-                <p className="text-2xl font-bold text-purple-600">5</p>
+                <p className="text-2xl font-bold text-cyan-600">5</p>
               </div>
-              <div className="p-3 bg-purple-100 rounded-xl">
-                <User className="w-6 h-6 text-purple-600" />
+              <div className="p-3 bg-cyan-100 rounded-xl">
+                <User className="w-6 h-6 text-cyan-600" />
               </div>
             </div>
           </div>
@@ -279,8 +279,8 @@ const InterviewSchedulingView = () => {
             {interviews.map((interview) => (
               <div key={interview.id} className="p-6 hover:bg-blue-50/30 transition-colors">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-3 bg-gradient-to-r from-cyan-100 to-blue-100 rounded-xl">
                       {getTypeIcon(interview.type)}
                     </div>
                     <div>

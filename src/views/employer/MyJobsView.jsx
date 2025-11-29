@@ -99,7 +99,7 @@ const MyJobsView = () => {
             Manage your job postings and track applications.
           </p>
         </div>
-        <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center">
+        <button className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center">
           <Plus className="h-4 w-4 mr-2" />
           Post New Job
         </button>
@@ -120,7 +120,7 @@ const MyJobsView = () => {
           <div className="text-sm text-gray-600">Inactive Jobs</div>
         </div>
         <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
-          <div className="text-2xl font-bold text-purple-600">{stats.totalApplications}</div>
+          <div className="text-2xl font-bold text-cyan-600">{stats.totalApplications}</div>
           <div className="text-sm text-gray-600">Total Applications</div>
         </div>
       </div>

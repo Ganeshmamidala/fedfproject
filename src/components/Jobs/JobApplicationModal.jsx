@@ -70,7 +70,7 @@ const JobApplicationModal = ({
 
         <div className="p-6">
           {/* Job Summary */}
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-6">
+          <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-gray-900 mb-2">{job.title}</h3>
             <p className="text-sm text-gray-600 mb-2">{job.employer?.company_name}</p>
             <p className="text-sm text-gray-600">{job.location} • {job.salary_range}</p>
@@ -165,7 +165,7 @@ const JobApplicationModal = ({
               <button
                 type="submit"
                 disabled={loading || !coverLetter.trim()}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
                 {loading ? (
                   <>

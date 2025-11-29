@@ -82,7 +82,7 @@ const NotificationCenter = ({ isOpen, onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50 flex-shrink-0">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-cyan-50 to-blue-50 flex-shrink-0">
           <div className="flex items-center space-x-2">
             <Bell className="h-5 w-5 text-blue-600" />
             <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
@@ -116,7 +116,7 @@ const NotificationCenter = ({ isOpen, onClose }) => {
         <div className="flex-1 overflow-y-auto">
           {notifications.length === 0 ? (
             <div className="p-12 text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-cyan-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Bell className="h-10 w-10 text-blue-500" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">No notifications yet</h3>
@@ -126,7 +126,7 @@ const NotificationCenter = ({ isOpen, onClose }) => {
             notifications.map((notification) => (
               <div
                 key={notification.id}
-                className={`p-4 border-b border-gray-100 hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-purple-50/30 transition-all duration-200 ${
+                className={`p-4 border-b border-gray-100 hover:bg-gradient-to-r hover:from-cyan-50/30 hover:to-blue-50/30 transition-all duration-200 ${
                   !notification.read ? 'bg-blue-50/50 border-l-4 border-l-blue-500' : 'border-l-4 border-l-transparent'
                 }`}
               >

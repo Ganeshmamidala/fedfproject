@@ -20,7 +20,7 @@ const DashboardStats = () => {
         return [
           { title: 'Total Users', value: statistics.totalUsers || 0, icon: Users, color: 'bg-blue-500' },
           { title: 'Active Jobs', value: statistics.activeJobs || 0, icon: Briefcase, color: 'bg-green-500' },
-          { title: 'Applications', value: statistics.totalApplications || 0, icon: FileText, color: 'bg-purple-500' },
+          { title: 'Applications', value: statistics.totalApplications || 0, icon: FileText, color: 'bg-cyan-500' },
           { title: 'Placements', value: statistics.totalPlacements || 0, icon: TrendingUp, color: 'bg-orange-500' }
         ];
       
@@ -28,7 +28,7 @@ const DashboardStats = () => {
         return [
           { title: 'Available Jobs', value: statistics.availableJobs || 0, icon: Briefcase, color: 'bg-blue-500' },
           { title: 'My Applications', value: statistics.myApplications || 0, icon: FileText, color: 'bg-green-500' },
-          { title: 'Interviews', value: statistics.interviews || 0, icon: Users, color: 'bg-purple-500' },
+          { title: 'Interviews', value: statistics.interviews || 0, icon: Users, color: 'bg-cyan-500' },
           { title: 'Placements', value: statistics.placements || 0, icon: TrendingUp, color: 'bg-orange-500' }
         ];
       
@@ -36,7 +36,7 @@ const DashboardStats = () => {
         return [
           { title: 'Posted Jobs', value: statistics.postedJobs || 0, icon: Briefcase, color: 'bg-blue-500' },
           { title: 'Active Jobs', value: statistics.activeJobs || 0, icon: Briefcase, color: 'bg-green-500' },
-          { title: 'Applications Received', value: statistics.applicationsReceived || 0, icon: FileText, color: 'bg-purple-500' },
+          { title: 'Applications Received', value: statistics.applicationsReceived || 0, icon: FileText, color: 'bg-cyan-500' },
           { title: 'Interviews', value: statistics.interviews || 0, icon: Users, color: 'bg-orange-500' }
         ];
       
@@ -44,7 +44,7 @@ const DashboardStats = () => {
         return [
           { title: 'Total Students', value: statistics.totalStudents || 0, icon: Users, color: 'bg-blue-500' },
           { title: 'Placed Students', value: statistics.placedStudents || 0, icon: TrendingUp, color: 'bg-green-500' },
-          { title: 'Active Jobs', value: statistics.activeJobs || 0, icon: Briefcase, color: 'bg-purple-500' },
+          { title: 'Active Jobs', value: statistics.activeJobs || 0, icon: Briefcase, color: 'bg-cyan-500' },
           { title: 'Placement Rate', value: `${statistics.placementRate || 0}%`, icon: TrendingUp, color: 'bg-orange-500' }
         ];
       

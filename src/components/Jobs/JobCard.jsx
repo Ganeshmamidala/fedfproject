@@ -6,7 +6,7 @@ const JobCard = ({ job, onApply, onView, showActions = true }) => {
     const colors = {
       full_time: 'bg-green-100 text-green-800',
       part_time: 'bg-blue-100 text-blue-800',
-      internship: 'bg-purple-100 text-purple-800',
+      internship: 'bg-cyan-100 text-cyan-800',
       contract: 'bg-orange-100 text-orange-800'
     };
     return colors[type] || 'bg-gray-100 text-gray-800';

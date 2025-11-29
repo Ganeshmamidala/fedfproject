@@ -171,8 +171,8 @@ const DocumentManagementView = () => {
       case 'resume': return 'bg-blue-100 text-blue-800';
       case 'cover-letter': return 'bg-green-100 text-green-800';
       case 'certificate': return 'bg-yellow-100 text-yellow-800';
-      case 'transcript': return 'bg-purple-100 text-purple-800';
-      case 'portfolio': return 'bg-pink-100 text-pink-800';
+      case 'transcript': return 'bg-cyan-100 text-cyan-800';
+      case 'portfolio': return 'bg-blue-100 text-blue-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -290,7 +290,7 @@ const DocumentManagementView = () => {
           </button>
           <button
             onClick={handleUpload}
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             Upload Document
           </button>
@@ -307,18 +307,18 @@ const DocumentManagementView = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-cyan-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
               Document Management
             </h1>
             <p className="text-gray-600 mt-2">Manage and organize your documents</p>
           </div>
           <button
             onClick={() => setShowUploadModal(true)}
-            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             <Upload className="w-5 h-5" />
             <span>Upload Document</span>
@@ -353,10 +353,10 @@ const DocumentManagementView = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Favorites</p>
-                <p className="text-2xl font-bold text-purple-600">{documents.filter(d => d.isFavorite).length}</p>
+                <p className="text-2xl font-bold text-cyan-600">{documents.filter(d => d.isFavorite).length}</p>
               </div>
-              <div className="p-3 bg-purple-100 rounded-xl">
-                <Star className="w-6 h-6 text-purple-600" />
+              <div className="p-3 bg-cyan-100 rounded-xl">
+                <Star className="w-6 h-6 text-cyan-600" />
               </div>
             </div>
           </div>
@@ -421,7 +421,7 @@ const DocumentManagementView = () => {
               <p className="text-gray-500 mb-4">Upload your first document to get started</p>
               <button
                 onClick={() => setShowUploadModal(true)}
-                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200"
+                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-200"
               >
                 Upload Document
               </button>
@@ -487,7 +487,7 @@ const DocumentManagementView = () => {
                           setAnalysisData(analysis);
                           setShowAnalysis(true);
                         }}
-                        className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                        className="p-2 text-gray-600 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"
                         title="Analyze resume for job matches"
                       >
                         <BarChart3 className="w-4 h-4" />
@@ -546,7 +546,7 @@ const DocumentManagementView = () => {
       {showAnalysis && analysisData && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl">
+            <div className="sticky top-0 bg-gradient-to-r from-cyan-600 to-blue-600 text-white p-6 rounded-t-2xl">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <BarChart3 className="w-8 h-8" />
@@ -585,15 +585,15 @@ const DocumentManagementView = () => {
                     <FileText className="w-12 h-12 text-blue-500 opacity-20" />
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border-2 border-purple-200">
+                <div className="bg-gradient-to-br from-cyan-50 to-cyan-100 rounded-xl p-4 border-2 border-cyan-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-purple-600 text-sm font-medium">Match Rate</p>
-                      <p className="text-3xl font-bold text-purple-700">
+                      <p className="text-cyan-600 text-sm font-medium">Match Rate</p>
+                      <p className="text-3xl font-bold text-cyan-700">
                         {Math.round((analysisData.totalJobs / analysisData.totalAvailableJobs) * 100)}%
                       </p>
                     </div>
-                    <BarChart3 className="w-12 h-12 text-purple-500 opacity-20" />
+                    <BarChart3 className="w-12 h-12 text-cyan-500 opacity-20" />
                   </div>
                 </div>
               </div>
@@ -631,10 +631,10 @@ const DocumentManagementView = () => {
                     const colors = [
                       'bg-blue-500',
                       'bg-green-500',
-                      'bg-purple-500',
+                      'bg-cyan-500',
                       'bg-orange-500',
-                      'bg-pink-500',
-                      'bg-indigo-500'
+                      'bg-blue-500',
+                      'bg-cyan-500'
                     ];
                     
                     return (
@@ -716,7 +716,7 @@ const DocumentManagementView = () => {
                     // Navigate to browse jobs if available
                     success('Redirecting to job listings...');
                   }}
-                  className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors font-medium shadow-lg"
+                  className="px-6 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-colors font-medium shadow-lg"
                 >
                   View All Jobs →
                 </button>
@@ -731,7 +731,7 @@ const DocumentManagementView = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+            <div className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Eye className="w-6 h-6" />
@@ -841,7 +841,7 @@ const DocumentManagementView = () => {
 
                     <div>
                       <h2 className="text-xl font-bold text-gray-900 mb-3">Education</h2>
-                      <div className="border-l-2 border-purple-500 pl-4">
+                      <div className="border-l-2 border-cyan-500 pl-4">
                         <h3 className="font-semibold text-gray-900">Bachelor of Technology</h3>
                         <p className="text-sm text-gray-600">Computer Science • 2019 - 2023</p>
                       </div>
@@ -936,7 +936,7 @@ const DocumentManagementView = () => {
                     success(`Downloading ${previewDocument.name}...`);
                     setShowPreview(false);
                   }}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors"
+                  className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-colors"
                 >
                   Download
                 </button>

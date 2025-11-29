@@ -77,7 +77,7 @@ const Sidebar = ({ activeView, setActiveView }) => {
                     onClick={() => setActiveView(item.id)}
                     className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 transform hover:scale-105 ${
                       activeView === item.id
-                        ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-md border-r-4 border-blue-500'
+                        ? 'bg-gradient-to-r from-cyan-100 to-blue-100 text-blue-700 shadow-md border-r-4 border-blue-500'
                         : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:shadow-sm'
                     }`}
                   >

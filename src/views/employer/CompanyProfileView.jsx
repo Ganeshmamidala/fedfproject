@@ -91,7 +91,7 @@ const CompanyProfileView = () => {
           </div>
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center"
+            className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center"
           >
             <Edit3 className="h-4 w-4 mr-2" />
             {isEditing ? 'Cancel' : 'Edit Profile'}
@@ -104,7 +104,7 @@ const CompanyProfileView = () => {
             <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-200/50 card-hover">
               <div className="text-center mb-6">
                 <div className="relative inline-block">
-                  <div className="w-24 h-24 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                  <div className="w-24 h-24 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
                     {companyData.companyName.split(' ').map(n => n[0]).join('')}
                   </div>
                   {isEditing && (
@@ -219,7 +219,7 @@ const CompanyProfileView = () => {
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="text-sm font-medium text-gray-900 mb-3">Recruitment Stats</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="text-center p-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                  <div className="text-center p-2 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg">
                     <div className="text-lg font-bold text-blue-600">{companyStats.activeJobs}</div>
                     <div className="text-xs text-gray-600">Active Jobs</div>
                   </div>
@@ -275,7 +275,7 @@ const CompanyProfileView = () => {
                 {companyData.benefits.map((benefit, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200"
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gradient-to-r from-cyan-100 to-blue-100 text-blue-800 border border-blue-200"
                   >
                     {benefit}
                     {isEditing && (

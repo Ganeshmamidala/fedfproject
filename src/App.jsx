@@ -92,7 +92,7 @@ const AppContent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-cyan-50/30">
       <Header />
       <div className="flex">
         <Sidebar activeView={activeView} setActiveView={setActiveView} />
