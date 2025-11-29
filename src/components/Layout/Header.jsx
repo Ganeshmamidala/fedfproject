@@ -1,8 +1,9 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { LogOut, User, Bell, Settings } from 'lucide-react';
+import { LogOut, Bell, Settings } from 'lucide-react';
 import NotificationCenter from '../Notifications/NotificationCenter';
+import SettingsPanel from '../Settings/SettingsPanel';
 import { getNotifications } from '../../lib/mockData';
 
 const Header = () => {
@@ -110,44 +111,14 @@ const Header = () => {
               </div>
               
               <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <button 
-                    onClick={handleSettingsClick}
-                    className="p-2 text-gray-400 hover:text-blue-600 transition-all duration-200 hover:bg-blue-50 rounded-lg"
-                    title="Settings"
-                  >
-                    <Settings className="h-5 w-5" />
-                  </button>
-                  
-                  {/* Settings Dropdown */}
-                  {showSettings && (
-                    <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-[60] animate-scaleIn origin-top-right">
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="text-sm font-semibold text-gray-900">Settings</p>
-                      </div>
-                      <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-colors flex items-center">
-                        <User className="h-4 w-4 mr-3 text-gray-400" />
-                        Profile Settings
-                      </button>
-                      <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-colors flex items-center">
-                        <Bell className="h-4 w-4 mr-3 text-gray-400" />
-                        Notification Preferences
-                      </button>
-                      <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-colors flex items-center">
-                        <Settings className="h-4 w-4 mr-3 text-gray-400" />
-                        Account Settings
-                      </button>
-                      <div className="border-t border-gray-100 mt-1 pt-1">
-                        <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-colors">
-                          Privacy & Security
-                        </button>
-                        <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-colors">
-                          Help & Support
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <button 
+                  onClick={handleSettingsClick}
+                  className="p-2 text-gray-400 hover:text-blue-600 transition-all duration-200 hover:bg-blue-50 rounded-lg"
+                  title="Settings"
+                >
+                  <Settings className="h-5 w-5" />
+                </button>
+                
                 <button
                   onClick={handleSignOut}
                   className="p-2 text-gray-400 hover:text-red-600 transition-all duration-200 hover:bg-red-50 rounded-lg"
@@ -184,6 +155,12 @@ const Header = () => {
           }
         }}
       />
+      
+      {showSettings && (
+        <SettingsPanel 
+          onClose={() => setShowSettings(false)}
+        />
+      )}
     </header>
   );
 };
