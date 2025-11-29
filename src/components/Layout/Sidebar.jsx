@@ -31,7 +31,7 @@ const Sidebar = ({ activeView, setActiveView }) => {
           { id: 'browse-jobs', label: 'Browse Jobs', icon: Briefcase },
           { id: 'my-applications', label: 'My Applications', icon: FileText },
           { id: 'messages', label: 'Messages', icon: MessageCircle },
-          { id: 'documents', label: 'Documents', icon: FolderOpen },
+          { id: 'document-management', label: 'Documents', icon: FolderOpen },
           { id: 'profile', label: 'My Profile', icon: Users }
         ];
       
@@ -42,7 +42,7 @@ const Sidebar = ({ activeView, setActiveView }) => {
           { id: 'my-jobs', label: 'My Job Listings', icon: Briefcase },
           { id: 'applications-received', label: 'Applications Received', icon: FileText },
           { id: 'messages', label: 'Messages', icon: MessageCircle },
-          { id: 'documents', label: 'Documents', icon: FolderOpen },
+          { id: 'document-management', label: 'Documents', icon: FolderOpen },
           { id: 'interviews', label: 'Interviews', icon: Calendar },
           { id: 'company-profile', label: 'Company Profile', icon: Building }
         ];
