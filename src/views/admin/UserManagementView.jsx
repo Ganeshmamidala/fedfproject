@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Filter, Users, UserPlus, CreditCard, Trash2, Eye, Shield, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Filter, Users, UserPlus, CreditCard, Trash2, Eye, Edit, Shield, CheckCircle, XCircle } from 'lucide-react';
 
 const UserManagementView = () => {
   const [searchQuery, setSearchQuery] = useState('');

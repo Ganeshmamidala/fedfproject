@@ -13,6 +13,10 @@ import MyJobsView from './views/employer/MyJobsView';
 import ProfileView from './views/student/ProfileView';
 import AnalyticsView from './views/admin/AnalyticsView';
 import UserManagementView from './views/admin/UserManagementView';
+import JobManagementView from './views/admin/JobManagementView';
+import ApplicationsView from './views/admin/ApplicationsView';
+import ReportsView from './views/admin/ReportsView';
+import SystemSettingsView from './views/admin/SystemSettingsView';
 import CompanyProfileView from './views/employer/CompanyProfileView';
 import MessagingView from './views/shared/MessagingView';
 import InterviewSchedulingView from './views/shared/InterviewSchedulingView';
@@ -73,14 +77,36 @@ const AppContent = () => {
         return <UserManagementView />;
       case 'user-management':
         return <UserManagementView />;
+      case 'jobs':
+        return <JobManagementView />;
+      case 'job-management':
+        return <JobManagementView />;
+      case 'applications':
+        return <ApplicationsView />;
+      case 'reports':
+        return <ReportsView />;
+      case 'settings':
+        return <SystemSettingsView />;
+      case 'system-settings':
+        return <SystemSettingsView />;
       case 'company-profile':
         return <CompanyProfileView />;
       case 'document-management':
         return <DocumentManagementView />;
+      case 'messages':
+        return <MessagingView />;
       case 'messaging':
         return <MessagingView />;
       case 'interview-scheduling':
         return <InterviewSchedulingView />;
+      case 'interviews':
+        return <InterviewSchedulingView />;
+      case 'applications-received':
+        return <MyApplicationsView />;
+      case 'placement-records':
+        return <DashboardView onNavigate={setActiveView} />;
+      case 'student-management':
+        return <UserManagementView />;
       default:
         return (
           <div className="p-6">
