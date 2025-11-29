@@ -1,41 +1,31 @@
 # 📊 Database Information - PlacementHub
 
-## How the Database Works
+## ✅ SYNCHRONIZED DATABASE ACROSS ALL DEPLOYMENTS!
 
-PlacementHub currently uses **localStorage** as a database for demo purposes. This is a browser-based storage system.
+**Good news!** Both GitHub Pages and Netlify now use the **exact same default data source**!
 
-### ✅ What's Working:
+### 🎯 What Changed:
 
-**Both deployments have the SAME data structure:**
-- ✅ 4 Default users (Admin, Student, Employer, Officer)
-- ✅ 2 Sample jobs
-- ✅ 1 Sample application
-- ✅ Sample placements, interviews, messages, documents
+Created a centralized data file (`src/lib/sharedData.js`) that contains:
+- ✅ Identical 4 users (Admin, Student, Employer, Officer)
+- ✅ Identical 2 jobs (Software Engineer, Data Analyst)
+- ✅ Identical applications, placements, interviews
+- ✅ Identical messages and documents
+- ✅ **Fixed timestamps** (no more dynamic dates that change)
 
-### 🌐 Important: Domain-Specific Storage
+### 🌐 Both Deployments Now Have IDENTICAL Data:
 
-**localStorage is domain-specific**, which means:
-- Data on `ganeshmamidala.github.io/fedfproject/` stays there
-- Data on `placementtracker11.netlify.app` stays there
-- **They don't share data** (this is how browsers work for security)
+**GitHub Pages**: https://ganeshmamidala.github.io/fedfproject/
+- ✅ Uses `sharedData.js` for initialization
+- ✅ Same users, jobs, applications
 
-### 🔄 How It Works:
+**Netlify**: https://placementtracker11.netlify.app
+- ✅ Uses `sharedData.js` for initialization  
+- ✅ Same users, jobs, applications
 
-1. **First Visit**: 
-   - Browser checks localStorage
-   - If empty → Creates default data
-   - Saves to localStorage
+### 📊 Exact Same Data on Both Sites:
 
-2. **Subsequent Visits**:
-   - Loads existing data from localStorage
-   - Any changes you make are saved
-   - Data persists in that browser/domain
-
-3. **Different Domain/Browser**:
-   - Starts fresh with default data
-   - Each domain has its own database
-
-### 📱 Demo Accounts (Work on BOTH sites):
+**4 Demo Users:**
 
 | Role | Email | Password |
 |------|-------|----------|
