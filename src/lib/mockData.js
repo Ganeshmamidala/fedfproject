@@ -135,12 +135,22 @@ const initializeData = () => {
   try {
     const stored = localStorage.getItem('placement-hub-data');
     if (!stored) {
+      console.log('🔄 Initializing PlacementHub data for the first time...');
       localStorage.setItem('placement-hub-data', JSON.stringify(defaultData));
+      console.log('✅ Data initialized successfully!');
       return defaultData;
     }
-    return JSON.parse(stored);
+    const parsedData = JSON.parse(stored);
+    console.log('✅ Loaded existing PlacementHub data:', {
+      jobs: parsedData.jobs?.length || 0,
+      applications: parsedData.applications?.length || 0,
+      placements: parsedData.placements?.length || 0
+    });
+    return parsedData;
   } catch (error) {
-    console.error('Error loading data:', error);
+    console.error('❌ Error loading data:', error);
+    console.log('🔄 Falling back to default data...');
+    localStorage.setItem('placement-hub-data', JSON.stringify(defaultData));
     return defaultData;
   }
 };

@@ -43,14 +43,14 @@ const loadMockUsers = () => {
     const stored = localStorage.getItem('mock-users');
     if (stored) {
       const users = JSON.parse(stored);
-      console.log('Loaded users from localStorage:', users.length);
+      console.log('✅ Loaded', users.length, 'users from localStorage');
       return users;
     }
   } catch (error) {
-    console.error('Error loading mock users:', error);
+    console.error('❌ Error loading mock users:', error);
   }
   // If no stored users, initialize with defaults and save them
-  console.log('No stored users found, initializing with defaults');
+  console.log('🔄 No stored users found, initializing with', defaultMockUsers.length, 'default users');
   const defaults = [...defaultMockUsers];
   saveMockUsers(defaults);
   return defaults;
@@ -60,9 +60,9 @@ const loadMockUsers = () => {
 const saveMockUsers = (users) => {
   try {
     localStorage.setItem('mock-users', JSON.stringify(users));
-    console.log('Saved users to localStorage:', users.length);
+    console.log('💾 Saved', users.length, 'users to localStorage');
   } catch (error) {
-    console.error('Error saving mock users:', error);
+    console.error('❌ Error saving mock users:', error);
   }
 };
 
